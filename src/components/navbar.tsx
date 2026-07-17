@@ -2,14 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingBag, User, Menu, X } from "lucide-react";
+import Image from "next/image";
+import { ShoppingBag, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/cart-context";
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("");
   const { getItemCount } = useCart();
   const itemCount = getItemCount();
 
@@ -17,6 +20,20 @@ export function Navbar() {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("site_content")
+      .select("content")
+      .eq("section", "site_settings")
+      .single()
+      .then(({ data }) => {
+        if (data?.content?.logo_url) {
+          setLogoUrl(data.content.logo_url);
+        }
+      });
   }, []);
 
   return (
@@ -33,9 +50,20 @@ export function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
-              <h1 className="font-heading text-xl sm:text-2xl gold-text tracking-wider">
-                {SITE_NAME}
-              </h1>
+              {logoUrl ? (
+                <Image
+                  src={logoUrl}
+                  alt={SITE_NAME}
+                  width={160}
+                  height={40}
+                  className="h-13 w-12"
+                  priority
+                />
+              ) : (
+                <h1 className="font-heading text-xl sm:text-2xl gold-text tracking-wider">
+                  {SITE_NAME}
+                </h1>
+              )}
             </Link>
 
             {/* Desktop Nav */}
@@ -63,12 +91,6 @@ export function Navbar() {
                     {itemCount}
                   </span>
                 )}
-              </Link>
-              <Link
-                href="/admin"
-                className="p-2 text-dark-600 hover:text-gold transition-colors hidden sm:block"
-              >
-                <User className="w-5 h-5" />
               </Link>
               <button
                 onClick={() => setIsMobileOpen(true)}
@@ -107,14 +129,7 @@ export function Navbar() {
                 </Link>
               ))}
               <hr className="border-dark-200" />
-              <Link
-                href="/admin"
-                onClick={() => setIsMobileOpen(false)}
-                className="flex items-center space-x-2 text-dark-600 hover:text-gold transition-colors"
-              >
-                <User className="w-5 h-5" />
-                <span>Admin</span>
-              </Link>
+              
             </div>
           </div>
         </div>

@@ -14,6 +14,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/admin/commandes": "Commandes",
   "/admin/promo-codes": "Code Promo",
   "/admin/testimonials": "Témoignages",
+  "/admin/contenu": "Contenu",
   "/admin/messages": "Messages",
   "/admin/parametres": "Paramètres",
 };
@@ -34,15 +35,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        router.push("/admin/login");
-        return;
-      }
-      const { data } = await supabase
-        .from("admin_users")
-        .select("id")
-        .eq("id", user.id)
-        .single();
-      if (!data) {
         router.push("/admin/login");
         return;
       }

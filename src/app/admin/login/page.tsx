@@ -38,19 +38,6 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Check if user is admin
-      const { data: adminUser } = await supabase
-        .from("admin_users")
-        .select("id")
-        .eq("id", authData.user.id)
-        .single();
-
-      if (!adminUser) {
-        await supabase.auth.signOut();
-        setError("Accès non autorisé.");
-        return;
-      }
-
       router.push("/admin");
       router.refresh();
     } catch {

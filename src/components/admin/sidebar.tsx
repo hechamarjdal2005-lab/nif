@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   ChevronLeft,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/constants";
@@ -26,6 +27,7 @@ const navItems = [
   { href: "/admin/commandes", label: "Commandes", icon: ShoppingCart },
   { href: "/admin/promo-codes", label: "Code Promo", icon: Percent },
   { href: "/admin/testimonials", label: "Témoignages", icon: Star },
+  { href: "/admin/contenu", label: "Contenu", icon: FileText },
   { href: "/admin/messages", label: "Messages", icon: MessageSquare },
   { href: "/admin/parametres", label: "Paramètres", icon: Settings },
 ];

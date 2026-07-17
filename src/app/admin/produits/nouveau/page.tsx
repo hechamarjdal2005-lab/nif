@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { createClient } from "@/lib/supabase/client";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ImagePlus, X } from "lucide-react";
 import Link from "next/link";
 import { GENRES, PRODUCT_TYPES } from "@/lib/constants";
 
@@ -26,14 +26,26 @@ type ProductFormData = {
   is_new: boolean;
 }
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+
 function slugify(text: string) {
   return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+}
+
+function sanitizeFilename(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9.-]/g, "_").replace(/_{2,}/g, "_");
 }
 
 export default function AdminNewProductPage() {
   const router = useRouter();
   const [categories, setCategories] = useState<Array<{ id: string; nom: string }>>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProductFormData>({
     defaultValues: {
@@ -54,10 +66,85 @@ export default function AdminNewProductPage() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadError(null);
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setUploadError("Format invalide. Utilisez JPEG, PNG, WebP ou AVIF.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      setUploadError("Le fichier dépasse 5 Mo.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    setImagePreview(null);
+    setUploadError(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const uploadImage = async (supabase: ReturnType<typeof createClient>): Promise<string | null> => {
+    if (!imageFile) return null;
+
+    setIsUploadingImage(true);
+    try {
+      const ext = imageFile.name.split(".").pop() || "jpg";
+      const filename = `${Date.now()}-${sanitizeFilename(imageFile.name.replace(/\.[^.]+$/, ""))}.${ext}`;
+
+      const { error } = await supabase.storage
+        .from("product-images")
+        .upload(filename, imageFile, { contentType: imageFile.type, upsert: false });
+
+      if (error) throw error;
+
+      const { data: urlData } = supabase.storage
+        .from("product-images")
+        .getPublicUrl(filename);
+
+      return urlData.publicUrl;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Erreur inconnue";
+      if (message.includes("quota") || message.includes("storage")) {
+        setUploadError("Espace de stockage insuffisant.");
+      } else {
+        setUploadError(`Erreur lors de l'upload : ${message}`);
+      }
+      return null;
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     try {
       const supabase = createClient();
+
+      let imageUrl: string | null = null;
+      if (imageFile) {
+        imageUrl = await uploadImage(supabase);
+        if (imageFile && !imageUrl) return;
+      }
+
       const { error } = await supabase.from("products").insert({
         nom: data.nom,
         slug: slugify(data.nom),
@@ -70,7 +157,7 @@ export default function AdminNewProductPage() {
         stock: data.stock,
         is_bestseller: data.is_bestseller,
         is_new: data.is_new,
-        images: [],
+        images: imageUrl ? [imageUrl] : [],
       });
       if (error) throw error;
       router.push("/admin/produits");
@@ -91,6 +178,34 @@ export default function AdminNewProductPage() {
       <h2 className="font-heading text-2xl text-white mb-6">Nouveau Produit</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <label className="block text-sm text-dark-500 mb-1">Image du produit</label>
+          <div className="flex flex-col gap-3">
+            {imagePreview ? (
+              <div className="relative inline-block w-fit">
+                <img src={imagePreview} alt="Aperçu" className="h-40 w-40 object-cover rounded-lg border border-dark-200" />
+                <button type="button" onClick={removeImage} className="absolute -top-2 -right-2 bg-dark-100 border border-dark-200 rounded-full p-1 text-red-400 hover:text-red-300 transition-colors">
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-dark-200 rounded-lg cursor-pointer hover:border-gold/50 transition-colors">
+                <ImagePlus className="w-8 h-8 text-dark-500 mb-2" />
+                <span className="text-sm text-dark-500">Choisir une image</span>
+                <span className="text-xs text-dark-400 mt-1">JPEG, PNG, WebP ou AVIF — max 5 Mo</span>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/avif"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+            {uploadError && <p className="text-red-400 text-xs">{uploadError}</p>}
+          </div>
+        </div>
+
         <div>
           <label className="block text-sm text-dark-500 mb-1">Nom *</label>
           <Input {...register("nom", { required: true })} placeholder="Nom du produit" className="bg-dark" />
@@ -151,8 +266,8 @@ export default function AdminNewProductPage() {
           </label>
         </div>
 
-        <Button type="submit" size="lg" disabled={isSubmitting}>
-          {isSubmitting ? "Création..." : "Créer le Produit"}
+        <Button type="submit" size="lg" disabled={isSubmitting || isUploadingImage}>
+          {isUploadingImage ? "Upload de l'image..." : isSubmitting ? "Création..." : "Créer le Produit"}
         </Button>
       </form>
     </div>

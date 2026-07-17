@@ -84,9 +84,12 @@ export default function CheckoutPage() {
     try {
       const supabase = createClient();
 
-      const { data: order, error: orderError } = await supabase
+      const orderId = crypto.randomUUID();
+
+      const { error: orderError } = await supabase
         .from("orders")
         .insert({
+          id: orderId,
           client_nom: formData.nom,
           client_tel: formData.tel,
           client_email: formData.email || null,
@@ -95,14 +98,12 @@ export default function CheckoutPage() {
           total,
           promo_code_id: promoResult ? null : null,
           statut: "en_attente",
-        })
-        .select("id")
-        .single();
+        });
 
       if (orderError) throw orderError;
 
       const orderItems = items.map((item) => ({
-        order_id: order.id,
+        order_id: orderId,
         product_id: item.product.id,
         quantite: item.quantite,
         prix_unitaire: item.product.prix,

@@ -37,19 +37,6 @@ export async function updateSession(request: NextRequest) {
       url.pathname = "/admin/login";
       return NextResponse.redirect(url);
     }
-
-    // Check if user is admin
-    const { data: adminUser } = await supabase
-      .from("admin_users")
-      .select("id")
-      .eq("id", user.id)
-      .single();
-
-    if (!adminUser) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/admin/login";
-      return NextResponse.redirect(url);
-    }
   }
 
   return response;
