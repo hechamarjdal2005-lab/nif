@@ -43,27 +43,27 @@ export function WhyChooseUs() {
   }, []);
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-dark">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="font-heading text-3xl sm:text-4xl gold-text mb-4">{content.title}</h2>
+    <section className="py-16 px-4 sm:px-6 bg-dark">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-10">
+          <h2 className="font-heading text-2xl sm:text-3xl gold-text mb-3">{content.title}</h2>
           <p className="text-dark-500 max-w-xl mx-auto">
             {content.subtitle}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {content.cards.map((feature, i) => {
             const Icon = ICONS[i] || Shield;
             return (
               <div
                 key={feature.title}
-                className="text-center p-6 rounded-xl border border-dark-200 hover:border-gold/20 transition-all duration-300 hover-lift"
+                className="text-center p-5 rounded-lg border border-dark-200 hover:border-gold/20 transition-all duration-300 hover-lift"
               >
-                <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gold/10 flex items-center justify-center">
-                  <Icon className="w-7 h-7 text-gold" />
+                <div className="w-11 h-11 mx-auto mb-3 rounded-full bg-gold/10 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-gold" />
                 </div>
-                <h3 className="font-heading text-lg text-white mb-2">{feature.title}</h3>
+                <h3 className="font-heading text-base text-white mb-2">{feature.title}</h3>
                 <p className="text-sm text-dark-500 leading-relaxed">{feature.description}</p>
               </div>
             );

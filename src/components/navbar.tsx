@@ -42,11 +42,11 @@ export function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
-            ? "glass py-3"
-            : "bg-transparent py-5"
+            ? "glass py-2"
+            : "bg-transparent py-3"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
@@ -54,25 +54,25 @@ export function Navbar() {
                 <Image
                   src={logoUrl}
                   alt={SITE_NAME}
-                  width={160}
-                  height={40}
-                  className="h-13 w-12"
+                  width={120}
+                  height={36}
+                  className="h-10 w-auto"
                   priority
                 />
               ) : (
-                <h1 className="font-heading text-xl sm:text-2xl gold-text tracking-wider">
+                <h1 className="font-heading text-lg sm:text-xl gold-text tracking-wider">
                   {SITE_NAME}
                 </h1>
               )}
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-dark-600 hover:text-gold transition-colors duration-300 tracking-wide uppercase font-medium"
+                  className="text-xs text-dark-600 hover:text-gold transition-colors duration-300 tracking-wide uppercase font-medium"
                 >
                   {link.label}
                 </Link>
@@ -80,23 +80,23 @@ export function Navbar() {
             </div>
 
             {/* Icons */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <Link
                 href="/panier"
-                className="relative p-2 text-dark-600 hover:text-gold transition-colors"
+                className="relative p-1.5 text-dark-600 hover:text-gold transition-colors"
               >
-                <ShoppingBag className="w-5 h-5" />
+                <ShoppingBag className="w-4 h-4" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold text-black text-xs font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-gold text-black text-[10px] font-bold rounded-full flex items-center justify-center">
                     {itemCount}
                   </span>
                 )}
               </Link>
               <button
                 onClick={() => setIsMobileOpen(true)}
-                className="md:hidden p-2 text-dark-600 hover:text-gold transition-colors"
+                className="md:hidden p-1.5 text-dark-600 hover:text-gold transition-colors"
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -110,20 +110,20 @@ export function Navbar() {
             className="absolute inset-0 bg-black/60"
             onClick={() => setIsMobileOpen(false)}
           />
-          <div className="absolute right-0 top-0 h-full w-72 bg-dark border-l border-dark-200 p-6 animate-slide-in">
+          <div className="absolute right-0 top-0 h-full w-64 bg-dark border-l border-dark-200 p-5 animate-slide-in">
             <button
               onClick={() => setIsMobileOpen(false)}
               className="absolute top-4 right-4 text-dark-500 hover:text-white"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="mt-12 flex flex-col space-y-6">
+            <div className="mt-12 flex flex-col space-y-5">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileOpen(false)}
-                  className="text-lg text-dark-600 hover:text-gold transition-colors tracking-wide uppercase font-medium"
+                  className="text-base text-dark-600 hover:text-gold transition-colors tracking-wide uppercase font-medium"
                 >
                   {link.label}
                 </Link>

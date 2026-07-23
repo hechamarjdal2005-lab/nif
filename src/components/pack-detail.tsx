@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ShoppingBag, Minus, Plus, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getImageUrl } from "@/lib/utils";
 import { useCart } from "@/lib/cart-context";
 import type { Product, PackItem } from "@/lib/types";
 
@@ -28,13 +28,13 @@ export function PackDetail({ pack }: PackDetailProps) {
   const savings = totalSeparate - pack.prix;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Image */}
       <div>
-        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-dark-50 border border-dark-200">
+        <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-dark-50 border border-dark-200 max-w-md">
           {images[selectedImage] ? (
             <Image
-              src={images[selectedImage]}
+              src={getImageUrl(images[selectedImage])}
               alt={pack.nom}
               fill
               className="object-cover"
@@ -48,16 +48,16 @@ export function PackDetail({ pack }: PackDetailProps) {
           )}
         </div>
         {images.length > 1 && (
-          <div className="flex gap-3 mt-4">
+          <div className="flex gap-2 mt-3">
             {images.map((img, i) => (
               <button
                 key={i}
                 onClick={() => setSelectedImage(i)}
-                className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                className={`relative w-16 h-16 rounded-md overflow-hidden border-2 transition-colors ${
                   i === selectedImage ? "border-gold" : "border-dark-200"
                 }`}
               >
-                <Image src={img} alt="" fill className="object-cover" sizes="80px" />
+                <Image src={getImageUrl(img)} alt="" fill className="object-cover" sizes="80px" />
               </button>
             ))}
           </div>
@@ -66,11 +66,11 @@ export function PackDetail({ pack }: PackDetailProps) {
 
       {/* Info */}
       <div>
-        <Badge variant="default" className="mb-4">Coffret</Badge>
-        <h1 className="font-heading text-3xl sm:text-4xl text-white mb-3">{pack.nom}</h1>
+        <Badge variant="default" className="mb-3">Coffret</Badge>
+        <h1 className="font-heading text-2xl sm:text-3xl text-white mb-3">{pack.nom}</h1>
 
         <div className="flex items-baseline gap-3 mb-4">
-          <span className="text-3xl font-semibold gold-text">{formatPrice(pack.prix)}</span>
+          <span className="text-2xl font-semibold gold-text">{formatPrice(pack.prix)}</span>
           {savings > 0 && (
             <>
               <span className="text-dark-500 line-through">{formatPrice(totalSeparate)}</span>
@@ -80,23 +80,23 @@ export function PackDetail({ pack }: PackDetailProps) {
         </div>
 
         {pack.description && (
-          <p className="text-dark-500 leading-relaxed mb-6">{pack.description}</p>
+          <p className="text-sm sm:text-base text-dark-500 leading-relaxed mb-5">{pack.description}</p>
         )}
 
         {/* Pack Contents */}
-        <div className="mb-6">
-          <h3 className="text-sm font-medium text-dark-500 uppercase tracking-wider mb-4">Contenu du Coffret</h3>
-          <div className="space-y-3">
+        <div className="mb-5">
+          <h3 className="text-xs font-medium text-dark-500 uppercase tracking-wider mb-3">Contenu du Coffret</h3>
+          <div className="space-y-2">
             {packItems.map((item) => (
               <Link
                 key={item.id}
                 href={`/produit/${item.product?.slug}`}
-                className="flex items-center gap-4 p-3 rounded-lg border border-dark-200 hover:border-gold/30 transition-colors group"
+                className="flex items-center gap-3 p-3 rounded-lg border border-dark-200 hover:border-gold/30 transition-colors group"
               >
-                <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-dark flex-shrink-0">
+                <div className="relative w-12 h-12 rounded-md overflow-hidden bg-dark flex-shrink-0">
                   {item.product?.images?.[0] ? (
                     <Image
-                      src={item.product.images[0]}
+                      src={getImageUrl(item.product.images[0])}
                       alt={item.product.nom}
                       fill
                       className="object-cover"
@@ -125,23 +125,23 @@ export function PackDetail({ pack }: PackDetailProps) {
         </div>
 
         {/* Quantity & Add to Cart */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="flex items-center border border-dark-200 rounded-lg">
             <button
               onClick={() => setQuantite(Math.max(1, quantite - 1))}
-              className="p-3 text-dark-500 hover:text-white transition-colors"
+              className="p-2.5 text-dark-500 hover:text-white transition-colors"
             >
               <Minus className="w-4 h-4" />
             </button>
             <span className="w-12 text-center text-white font-medium">{quantite}</span>
             <button
               onClick={() => setQuantite(quantite + 1)}
-              className="p-3 text-dark-500 hover:text-white transition-colors"
+              className="p-2.5 text-dark-500 hover:text-white transition-colors"
             >
               <Plus className="w-4 h-4" />
             </button>
           </div>
-          <Button size="lg" className="flex-1" onClick={() => addItem(pack, quantite)}>
+          <Button className="flex-1" onClick={() => addItem(pack, quantite)}>
             <ShoppingBag className="w-5 h-5 mr-2" />
             Ajouter au Panier
           </Button>

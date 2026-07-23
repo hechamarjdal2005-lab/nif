@@ -8,7 +8,7 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useCart } from "@/lib/cart-context";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getImageUrl } from "@/lib/utils";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, getTotal, getItemCount, isLoading } = useCart();
@@ -54,7 +54,7 @@ export default function CartPage() {
                   <div className="relative w-20 h-24 rounded-lg overflow-hidden bg-dark flex-shrink-0">
                     {item.product.images?.[0] ? (
                       <Image
-                        src={item.product.images[0]}
+                        src={getImageUrl(item.product.images[0])}
                         alt={item.product.nom}
                         fill
                         className="object-cover"

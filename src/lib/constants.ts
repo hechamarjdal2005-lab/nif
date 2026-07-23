@@ -3,10 +3,9 @@ export const SITE_DESCRIPTION = "Parfumerie marocaine de luxe";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const NAV_LINKS = [
-  { label: "Heritage", href: "/#notre-histoire" },
-  { label: "Collection", href: "/collection" },
-  { label: "Experience", href: "/#temoignages" },
-  { label: "Boutique", href: "/#contact" },
+  { label: "Accueil", href: "/" },
+  { label: "Boutique", href: "/collection" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export const GENRES = [

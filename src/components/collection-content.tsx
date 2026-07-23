@@ -52,7 +52,7 @@ export function CollectionContent({
   return (
     <div>
       {/* Search & Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-500" />
           <Input
@@ -69,7 +69,7 @@ export function CollectionContent({
 
       {/* Genre Filter */}
       {showGenreFilter && (
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-6">
           {[
             { value: "all", label: "Tout" },
             { value: "homme", label: "Homme" },
@@ -96,7 +96,7 @@ export function CollectionContent({
 
       {/* Category Filter */}
       {categories.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-6">
           <Button
             variant={selectedCategory === "all" ? "default" : "outline"}
             size="sm"
@@ -130,13 +130,13 @@ export function CollectionContent({
       )}
 
       {/* Results count */}
-      <p className="text-sm text-dark-500 mb-6">
+      <p className="text-sm text-dark-500 mb-5">
         {filteredProducts.length} produit{filteredProducts.length !== 1 ? "s" : ""} trouvé{filteredProducts.length !== 1 ? "s" : ""}
       </p>
 
       {/* Products Grid */}
       {paginatedProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {paginatedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

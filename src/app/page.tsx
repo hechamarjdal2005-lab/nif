@@ -6,7 +6,6 @@ import { FeaturedCategories } from "@/components/featured-categories";
 import { ProductCard } from "@/components/product-card";
 import { WhyChooseUs } from "@/components/why-choose-us";
 import { Testimonials } from "@/components/testimonials";
-import { InstagramMasonry } from "@/components/instagram-masonry";
 import { ContactForm } from "@/components/contact-form";
 import { Footer } from "@/components/footer";
 import type { Product } from "@/lib/types";
@@ -46,14 +45,14 @@ export default async function HomePage() {
 
       {/* Best Sellers */}
       {bestsellers.length > 0 && (
-        <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl sm:text-4xl gold-text mb-4">Best Sellers</h2>
+        <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="font-heading text-2xl sm:text-3xl gold-text mb-3">Best Sellers</h2>
             <p className="text-dark-500 max-w-xl mx-auto">
               Les parfums les plus plébiscités par notre clientèle
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {bestsellers.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -65,14 +64,14 @@ export default async function HomePage() {
 
       {/* Nouveautés */}
       {newProducts.length > 0 && (
-        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-dark max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl sm:text-4xl gold-text mb-4">Nouveautés</h2>
+        <section className="py-16 px-4 sm:px-6 bg-dark max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="font-heading text-2xl sm:text-3xl gold-text mb-3">Nouveautés</h2>
             <p className="text-dark-500 max-w-xl mx-auto">
               Découvrez nos dernières créations
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {newProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -82,7 +81,6 @@ export default async function HomePage() {
 
       <WhyChooseUs />
       <Testimonials />
-      <InstagramMasonry />
       <ContactForm />
       <Footer />
     </main>

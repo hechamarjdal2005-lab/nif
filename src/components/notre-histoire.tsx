@@ -43,15 +43,15 @@ export function NotreHistoire() {
   }, []);
 
   return (
-    <section id="notre-histoire" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section id="notre-histoire" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         {/* Text */}
         <div>
-          <p className="text-gold text-sm uppercase tracking-[0.3em] mb-4 font-medium">{content.section_label}</p>
-          <h2 className="font-heading text-3xl sm:text-4xl text-white mb-6 leading-tight">
+          <p className="text-gold text-xs uppercase tracking-[0.24em] mb-3 font-medium">{content.section_label}</p>
+          <h2 className="font-heading text-2xl sm:text-3xl text-white mb-4 leading-tight">
             {content.title}
           </h2>
-          <div className="space-y-4 text-dark-500 leading-relaxed">
+          <div className="space-y-3 text-sm sm:text-base text-dark-500 leading-relaxed">
             {content.paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -59,10 +59,10 @@ export function NotreHistoire() {
         </div>
 
         {/* Gallery */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-3">
             {[0, 1].map((i) => (
-              <div key={i} className={`${ASPECT_CLASSES[i]} bg-dark-50 border border-dark-200 rounded-xl overflow-hidden flex items-center justify-center`}>
+              <div key={i} className={`${ASPECT_CLASSES[i]} bg-dark-50 border border-dark-200 rounded-lg overflow-hidden flex items-center justify-center`}>
                 {content.images[i] ? (
                   <img src={content.images[i]} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -71,9 +71,9 @@ export function NotreHistoire() {
               </div>
             ))}
           </div>
-          <div className="space-y-4 pt-8">
+          <div className="space-y-3 pt-6">
             {[2, 3].map((i) => (
-              <div key={i} className={`${ASPECT_CLASSES[i]} bg-dark-50 border border-dark-200 rounded-xl overflow-hidden flex items-center justify-center`}>
+              <div key={i} className={`${ASPECT_CLASSES[i]} bg-dark-50 border border-dark-200 rounded-lg overflow-hidden flex items-center justify-center`}>
                 {content.images[i] ? (
                   <img src={content.images[i]} alt="" className="w-full h-full object-cover" />
                 ) : (

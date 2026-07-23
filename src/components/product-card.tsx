@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingBag } from "lucide-react";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn, formatPrice, getImageUrl } from "@/lib/utils";
 import { StarRating } from "@/components/ui/star-rating";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/lib/cart-context";
@@ -21,7 +21,7 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
   return (
     <div
       className={cn(
-        "group relative bg-dark-50 border border-dark-200 rounded-xl overflow-hidden hover-lift",
+        "group relative bg-dark-50 border border-dark-200 rounded-lg overflow-hidden hover-lift",
         className
       )}
     >
@@ -30,7 +30,7 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
         <div className="relative aspect-[3/4] overflow-hidden bg-dark">
           {product.images && product.images[0] ? (
             <Image
-              src={product.images[0]}
+              src={getImageUrl(product.images[0])}
               alt={product.nom}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -52,14 +52,14 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
       </Link>
 
       {/* Content */}
-      <div className="p-4">
+      <div className="p-3">
         <div className="flex items-center justify-between mb-2">
           <StarRating rating={product.rating_avg} size="sm" />
           <span className="text-xs text-dark-500 capitalize">{product.genre}</span>
         </div>
 
         <Link href={product.type === "pack" ? `/pack/${product.slug}` : `/produit/${product.slug}`}>
-          <h3 className="font-heading text-lg text-white group-hover:text-gold transition-colors mb-1 line-clamp-1">
+          <h3 className="font-heading text-base text-white group-hover:text-gold transition-colors mb-1 line-clamp-1">
             {product.nom}
           </h3>
         </Link>
@@ -72,11 +72,11 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
           <div className="flex items-center gap-2">
             {discountedPrice && discountedPrice < product.prix ? (
               <>
-                <span className="text-gold font-semibold">{formatPrice(discountedPrice)}</span>
+              <span className="text-sm text-gold font-semibold">{formatPrice(discountedPrice)}</span>
                 <span className="text-dark-500 text-sm line-through">{formatPrice(product.prix)}</span>
               </>
             ) : (
-              <span className="text-gold font-semibold">{formatPrice(product.prix)}</span>
+              <span className="text-sm text-gold font-semibold">{formatPrice(product.prix)}</span>
             )}
           </div>
 
@@ -85,9 +85,9 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
               e.preventDefault();
               addItem(product);
             }}
-            className="p-2 bg-gold/10 text-gold rounded-lg hover:bg-gold hover:text-black transition-all duration-300"
+            className="p-1.5 bg-gold/10 text-gold rounded-md hover:bg-gold hover:text-black transition-all duration-300"
           >
-            <ShoppingBag className="w-4 h-4" />
+            <ShoppingBag className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

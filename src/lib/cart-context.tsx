@@ -16,6 +16,29 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+function isValidCartItem(item: unknown): item is CartItem {
+  if (!item || typeof item !== "object") return false;
+
+  const cartItem = item as Partial<CartItem>;
+  const product = cartItem.product as Partial<Product> | undefined;
+
+  return (
+    !!product &&
+    typeof product.id === "string" &&
+    product.id.length > 0 &&
+    typeof product.prix === "number" &&
+    Number.isFinite(product.prix) &&
+    typeof cartItem.quantite === "number" &&
+    Number.isFinite(cartItem.quantite) &&
+    cartItem.quantite > 0
+  );
+}
+
+function parseCartItems(saved: string): CartItem[] {
+  const parsed: unknown = JSON.parse(saved);
+  return Array.isArray(parsed) ? parsed.filter(isValidCartItem) : [];
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +46,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("cart");
-      if (saved) setItems(JSON.parse(saved));
+      if (saved) setItems(parseCartItems(saved));
     } catch {}
     setIsLoading(false);
   }, []);
@@ -35,32 +58,37 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, isLoading]);
 
   const addItem = useCallback((product: Product, quantite = 1) => {
+    if (!product?.id || quantite <= 0) return;
+
     setItems((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
+      const validItems = prev.filter(isValidCartItem);
+      const existing = validItems.find((item) => item.product.id === product.id);
       if (existing) {
-        return prev.map((item) =>
+        return validItems.map((item) =>
           item.product.id === product.id
             ? { ...item, quantite: item.quantite + quantite }
             : item
         );
       }
-      return [...prev, { product, quantite }];
+      return [...validItems, { product, quantite }];
     });
   }, []);
 
   const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((item) => item.product.id !== productId));
+    setItems((prev) => prev.filter((item) => isValidCartItem(item) && item.product.id !== productId));
   }, []);
 
   const updateQuantity = useCallback((productId: string, quantite: number) => {
     if (quantite <= 0) {
-      setItems((prev) => prev.filter((item) => item.product.id !== productId));
+      setItems((prev) => prev.filter((item) => isValidCartItem(item) && item.product.id !== productId));
       return;
     }
     setItems((prev) =>
-      prev.map((item) =>
-        item.product.id === productId ? { ...item, quantite } : item
-      )
+      prev
+        .filter(isValidCartItem)
+        .map((item) =>
+          item.product.id === productId ? { ...item, quantite } : item
+        )
     );
   }, []);
 

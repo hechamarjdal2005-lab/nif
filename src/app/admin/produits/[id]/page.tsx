@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { ArrowLeft, ImagePlus, X } from "lucide-react";
+import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import { GENRES, PRODUCT_TYPES } from "@/lib/constants";
 
@@ -70,7 +71,7 @@ export default function AdminEditProductPage() {
         });
         const images = productRes.data.images as string[] | null;
         if (images && images.length > 0) {
-          setExistingImageUrl(images[0]);
+          setExistingImageUrl(getImageUrl(images[0]));
         }
       }
       setCategories(catsRes.data || []);

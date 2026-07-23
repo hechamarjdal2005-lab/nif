@@ -27,8 +27,8 @@ export function Testimonials() {
 
   if (loading) {
     return (
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+      <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
+        <div className="text-center mb-10">
           <Skeleton className="h-10 w-64 mx-auto mb-4" />
           <Skeleton className="h-5 w-96 mx-auto" />
         </div>
@@ -44,19 +44,19 @@ export function Testimonials() {
   if (testimonials.length === 0) return null;
 
   return (
-    <section id="temoignages" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center mb-16">
-        <h2 className="font-heading text-3xl sm:text-4xl gold-text mb-4">Ce Que Disent Nos Clients</h2>
+    <section id="temoignages" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div className="text-center mb-10">
+        <h2 className="font-heading text-2xl sm:text-3xl gold-text mb-3">Ce Que Disent Nos Clients</h2>
         <p className="text-dark-500 max-w-xl mx-auto">
           Des mots précieux de ceux qui ont découvert nos créations
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {testimonials.map((t) => (
           <div
             key={t.id}
-            className="p-6 rounded-xl border border-dark-200 bg-dark-50 hover:border-gold/20 transition-all duration-300"
+            className="p-5 rounded-lg border border-dark-200 bg-dark-50 hover:border-gold/20 transition-all duration-300"
           >
             <StarRating rating={t.rating} size="sm" className="mb-4" />
             <p className="text-dark-500 text-sm leading-relaxed mb-4 italic">

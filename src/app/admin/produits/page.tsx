@@ -7,7 +7,7 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/client";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getImageUrl } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
 export default function AdminProduitsPage() {
@@ -77,7 +77,7 @@ export default function AdminProduitsPage() {
                 <td className="px-4 py-3">
                   <div className="relative w-10 h-12 rounded-lg overflow-hidden bg-dark">
                     {product.images?.[0] ? (
-                      <Image src={product.images[0]} alt="" fill className="object-cover" sizes="40px" />
+                      <Image src={getImageUrl(product.images[0])} alt="" fill className="object-cover" sizes="40px" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-dark-400 text-xs">✦</div>
                     )}

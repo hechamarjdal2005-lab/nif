@@ -32,22 +32,22 @@ const categories = [
 
 export function FeaturedCategories() {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center mb-16">
-        <h2 className="font-heading text-3xl sm:text-4xl gold-text mb-4">Découvrez Nos Univers</h2>
+    <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div className="text-center mb-10">
+        <h2 className="font-heading text-2xl sm:text-3xl gold-text mb-3">Découvrez Nos Univers</h2>
         <p className="text-dark-500 max-w-xl mx-auto">
           Explorez nos collections soigneusement composées pour chaque occasion
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {categories.map((cat) => (
           <Link key={cat.title} href={cat.href}>
-            <div className="group relative h-64 rounded-xl overflow-hidden border border-dark-200 hover:border-gold/30 transition-all duration-500">
+            <div className="group relative h-52 rounded-lg overflow-hidden border border-dark-200 hover:border-gold/30 transition-all duration-500">
               <div className={`absolute inset-0 bg-gradient-to-br ${cat.gradient} group-hover:scale-110 transition-transform duration-500`} />
               <div className="absolute inset-0 bg-dark/40" />
-              <div className="relative h-full flex flex-col justify-end p-6">
-                <h3 className="font-heading text-xl text-white mb-1">{cat.title}</h3>
+              <div className="relative h-full flex flex-col justify-end p-5">
+                <h3 className="font-heading text-lg text-white mb-1">{cat.title}</h3>
                 <p className="text-sm text-dark-500 mb-3">{cat.description}</p>
                 <div className="flex items-center text-gold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <span>Explorer</span>

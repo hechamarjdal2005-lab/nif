@@ -2,6 +2,7 @@ export type Genre = "homme" | "femme" | "mixte";
 export type ProductType = "parfum" | "pack";
 export type OrderStatut = "en_attente" | "confirmee" | "expediee" | "livree" | "annulee";
 export type TypeReduction = "pourcentage" | "montant_fixe";
+export type SocialPlatform = "whatsapp" | "telephone" | "instagram" | "facebook" | "tiktok";
 
 export interface Category {
   id: string;
@@ -96,6 +97,18 @@ export interface ContactMessage {
   message: string;
   is_read: boolean;
   created_at: string;
+}
+
+export interface ContactSocialLink {
+  id: string;
+  platform: SocialPlatform;
+  label: string;
+  href: string;
+  value: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AdminUser {

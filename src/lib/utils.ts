@@ -28,3 +28,13 @@ export function getDiscountedPrice(prix: number, promoType: string, promoValue: 
   }
   return Math.max(0, prix - promoValue);
 }
+
+const SUPABASE_PROJECT_URL = "https://rrpntzxmhldpuskhfufe.supabase.co";
+const PRODUCT_IMAGES_BUCKET = "product-images";
+
+export function getImageUrl(path: string): string {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  const filename = path.replace(/^\/images\/products\//, "").replace(/^\//, "");
+  return `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filename}`;
+}

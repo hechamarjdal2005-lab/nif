@@ -46,7 +46,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[82vh] flex items-center justify-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-darker">
         {content.background_image_url ? (
@@ -66,25 +66,25 @@ export function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
         <div className="animate-fade-in-up">
-          <p className="text-gold text-sm sm:text-base uppercase tracking-[0.3em] mb-6 font-medium">
+          <p className="text-gold text-xs sm:text-sm uppercase tracking-[0.24em] mb-4 font-medium">
             {content.subtitle}
           </p>
-          <h1 className="font-heading text-5xl sm:text-7xl lg:text-8xl gold-text mb-6 leading-tight">
+          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl gold-text mb-4 leading-tight">
             {content.title}
           </h1>
-          <p className="text-dark-500 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+          <p className="text-dark-500 text-base sm:text-lg max-w-xl mx-auto mb-7 font-light leading-relaxed">
             {content.description}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href={content.button_primary_link}>
-              <Button size="lg" className="text-base px-10">
+              <Button className="px-7">
                 {content.button_primary_text}
               </Button>
             </Link>
             <Link href={content.button_secondary_link}>
-              <Button variant="outline" size="lg" className="text-base px-10">
+              <Button variant="outline" className="px-7">
                 {content.button_secondary_text}
               </Button>
             </Link>
@@ -93,8 +93,8 @@ export function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 rounded-full border-2 border-gold/30 flex justify-center pt-2">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
+        <div className="w-5 h-8 rounded-full border-2 border-gold/30 flex justify-center pt-2">
           <div className="w-1 h-2 bg-gold rounded-full animate-pulse" />
         </div>
       </div>

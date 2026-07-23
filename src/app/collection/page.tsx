@@ -36,9 +36,9 @@ export default async function CollectionPage() {
   return (
     <main>
       <Navbar />
-      <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="font-heading text-4xl sm:text-5xl gold-text mb-4">Notre Collection</h1>
+      <div className="pt-20 pb-12 px-4 sm:px-6 max-w-6xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="font-heading text-3xl sm:text-4xl gold-text mb-3">Notre Collection</h1>
           <p className="text-dark-500 max-w-xl mx-auto">
             Découvrez notre sélection de parfums artisanaux
           </p>
