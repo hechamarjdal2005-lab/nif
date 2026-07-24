@@ -4,7 +4,7 @@ function Skeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "animate-shimmer rounded-md bg-gradient-to-r from-dark-100 via-dark-200 to-dark-100 bg-[length:200%_100%]",
+        "animate-shimmer rounded-md bg-gradient-to-r from-surface-container-low via-outline-variant/20 to-surface-container-low bg-[length:200%_100%]",
         className
       )}
     />

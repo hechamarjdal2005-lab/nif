@@ -19,9 +19,9 @@ export default function CartPage() {
         <Navbar />
         <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
           <div className="animate-pulse space-y-4">
-            <div className="h-10 w-48 bg-dark-100 rounded" />
+            <div className="h-10 w-48 bg-surface-container-low rounded" />
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-24 bg-dark-100 rounded-xl" />
+              <div key={i} className="h-24 bg-surface-container-low rounded-xl" />
             ))}
           </div>
         </div>
@@ -34,7 +34,7 @@ export default function CartPage() {
     <main>
       <Navbar />
       <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <h1 className="font-heading text-3xl sm:text-4xl gold-text mb-8">Mon Panier</h1>
+        <h1 className="font-heading text-on-background text-3xl sm:text-4xl mb-8 font-medium">Mon Panier</h1>
 
         {items.length === 0 ? (
           <EmptyState
@@ -49,9 +49,9 @@ export default function CartPage() {
               {items.map((item) => (
                 <div
                   key={item.product.id}
-                  className="flex gap-4 p-4 rounded-xl border border-dark-200 bg-dark-50"
+                  className="flex gap-4 p-4 rounded-xl border border-outline-variant/40 bg-background"
                 >
-                  <div className="relative w-20 h-24 rounded-lg overflow-hidden bg-dark flex-shrink-0">
+                  <div className="relative w-20 h-24 rounded-lg overflow-hidden bg-surface-container-low flex-shrink-0">
                     {item.product.images?.[0] ? (
                       <Image
                         src={getImageUrl(item.product.images[0])}
@@ -61,36 +61,36 @@ export default function CartPage() {
                         sizes="80px"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-dark-400">
+                      <div className="w-full h-full flex items-center justify-center text-outline-variant">
                         ✦
                       </div>
                     )}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-white font-medium truncate">{item.product.nom}</h3>
-                    <p className="text-dark-500 text-sm capitalize">{item.product.genre}</p>
-                    <p className="text-gold font-semibold mt-1">{formatPrice(item.product.prix)}</p>
+                    <h3 className="text-on-background font-medium truncate">{item.product.nom}</h3>
+                    <p className="text-secondary text-sm capitalize">{item.product.genre}</p>
+                    <p className="text-primary font-semibold mt-1">{formatPrice(item.product.prix)}</p>
                   </div>
 
                   <div className="flex flex-col items-end justify-between">
                     <button
                       onClick={() => removeItem(item.product.id)}
-                      className="text-dark-500 hover:text-red-400 transition-colors"
+                      className="text-secondary hover:text-red-500 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                    <div className="flex items-center border border-dark-200 rounded-lg">
+                    <div className="flex items-center border border-outline-variant/40 rounded-lg">
                       <button
                         onClick={() => updateQuantity(item.product.id, item.quantite - 1)}
-                        className="p-1.5 text-dark-500 hover:text-white transition-colors"
+                        className="p-1.5 text-secondary hover:text-on-background transition-colors"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-8 text-center text-white text-sm">{item.quantite}</span>
+                      <span className="w-8 text-center text-on-background text-sm">{item.quantite}</span>
                       <button
                         onClick={() => updateQuantity(item.product.id, item.quantite + 1)}
-                        className="p-1.5 text-dark-500 hover:text-white transition-colors"
+                        className="p-1.5 text-secondary hover:text-on-background transition-colors"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -102,21 +102,21 @@ export default function CartPage() {
 
             {/* Summary */}
             <div className="lg:col-span-1">
-              <div className="p-6 rounded-xl border border-dark-200 bg-dark-50 sticky top-24">
-                <h2 className="font-heading text-xl text-white mb-4">Récapitulatif</h2>
+              <div className="p-6 rounded-xl border border-outline-variant/40 bg-background sticky top-24">
+                <h2 className="font-heading text-on-background text-xl mb-4">Récapitulatif</h2>
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-dark-500">Articles ({getItemCount()})</span>
-                    <span className="text-white">{formatPrice(getTotal())}</span>
+                    <span className="text-secondary">Articles ({getItemCount()})</span>
+                    <span className="text-on-background">{formatPrice(getTotal())}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-dark-500">Livraison</span>
-                    <span className="text-gold">Gratuite</span>
+                    <span className="text-secondary">Livraison</span>
+                    <span className="text-primary">Gratuite</span>
                   </div>
-                  <hr className="border-dark-200" />
+                  <hr className="border-outline-variant/40" />
                   <div className="flex justify-between">
-                    <span className="text-white font-medium">Total</span>
-                    <span className="text-gold font-semibold text-lg">{formatPrice(getTotal())}</span>
+                    <span className="text-on-background font-medium">Total</span>
+                    <span className="text-primary font-semibold text-lg">{formatPrice(getTotal())}</span>
                   </div>
                 </div>
                 <Link href="/checkout">

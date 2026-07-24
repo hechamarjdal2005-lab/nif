@@ -31,7 +31,7 @@ export function PackDetail({ pack }: PackDetailProps) {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Image */}
       <div>
-        <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-dark-50 border border-dark-200 max-w-md">
+        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 max-w-md">
           {images[selectedImage] ? (
             <Image
               src={getImageUrl(images[selectedImage])}
@@ -42,7 +42,7 @@ export function PackDetail({ pack }: PackDetailProps) {
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-dark-400">
+            <div className="w-full h-full flex items-center justify-center text-outline-variant">
               <Package className="w-20 h-20" />
             </div>
           )}
@@ -54,7 +54,7 @@ export function PackDetail({ pack }: PackDetailProps) {
                 key={i}
                 onClick={() => setSelectedImage(i)}
                 className={`relative w-16 h-16 rounded-md overflow-hidden border-2 transition-colors ${
-                  i === selectedImage ? "border-gold" : "border-dark-200"
+                  i === selectedImage ? "border-primary" : "border-outline-variant/40"
                 }`}
               >
                 <Image src={getImageUrl(img)} alt="" fill className="object-cover" sizes="80px" />
@@ -67,33 +67,33 @@ export function PackDetail({ pack }: PackDetailProps) {
       {/* Info */}
       <div>
         <Badge variant="default" className="mb-3">Coffret</Badge>
-        <h1 className="font-heading text-2xl sm:text-3xl text-white mb-3">{pack.nom}</h1>
+        <h1 className="font-heading text-on-background text-3xl mb-3">{pack.nom}</h1>
 
         <div className="flex items-baseline gap-3 mb-4">
-          <span className="text-2xl font-semibold gold-text">{formatPrice(pack.prix)}</span>
+          <span className="text-primary text-2xl font-semibold">{formatPrice(pack.prix)}</span>
           {savings > 0 && (
             <>
-              <span className="text-dark-500 line-through">{formatPrice(totalSeparate)}</span>
+              <span className="text-secondary line-through">{formatPrice(totalSeparate)}</span>
               <Badge variant="success">Économisez {formatPrice(savings)}</Badge>
             </>
           )}
         </div>
 
         {pack.description && (
-          <p className="text-sm sm:text-base text-dark-500 leading-relaxed mb-5">{pack.description}</p>
+          <p className="text-sm sm:text-base text-secondary leading-relaxed mb-5">{pack.description}</p>
         )}
 
         {/* Pack Contents */}
         <div className="mb-5">
-          <h3 className="text-xs font-medium text-dark-500 uppercase tracking-wider mb-3">Contenu du Coffret</h3>
+          <h3 className="text-xs font-medium text-secondary uppercase tracking-[0.1em] mb-3">Contenu du Coffret</h3>
           <div className="space-y-2">
             {packItems.map((item) => (
               <Link
                 key={item.id}
                 href={`/produit/${item.product?.slug}`}
-                className="flex items-center gap-3 p-3 rounded-lg border border-dark-200 hover:border-gold/30 transition-colors group"
+                className="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/40 hover:border-primary/30 transition-colors group"
               >
-                <div className="relative w-12 h-12 rounded-md overflow-hidden bg-dark flex-shrink-0">
+                <div className="relative w-12 h-12 rounded-md overflow-hidden bg-surface-container-low flex-shrink-0">
                   {item.product?.images?.[0] ? (
                     <Image
                       src={getImageUrl(item.product.images[0])}
@@ -103,20 +103,20 @@ export function PackDetail({ pack }: PackDetailProps) {
                       sizes="56px"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-dark-400">
+                    <div className="w-full h-full flex items-center justify-center text-outline-variant">
                       ✦
                     </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-medium truncate group-hover:text-gold transition-colors">
+                  <p className="text-on-background text-sm font-medium truncate group-hover:text-primary transition-colors">
                     {item.product?.nom}
                   </p>
-                  <p className="text-dark-500 text-xs">
+                  <p className="text-secondary text-xs">
                     Qté: {item.quantite} × {formatPrice(item.product?.prix || 0)}
                   </p>
                 </div>
-                <span className="text-gold text-sm font-medium">
+                <span className="text-primary text-sm font-medium">
                   {formatPrice((item.product?.prix || 0) * item.quantite)}
                 </span>
               </Link>
@@ -126,17 +126,17 @@ export function PackDetail({ pack }: PackDetailProps) {
 
         {/* Quantity & Add to Cart */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center border border-dark-200 rounded-lg">
+          <div className="flex items-center border border-outline-variant/40 rounded-lg">
             <button
               onClick={() => setQuantite(Math.max(1, quantite - 1))}
-              className="p-2.5 text-dark-500 hover:text-white transition-colors"
+              className="p-2.5 text-secondary hover:text-on-background transition-colors"
             >
               <Minus className="w-4 h-4" />
             </button>
-            <span className="w-12 text-center text-white font-medium">{quantite}</span>
+            <span className="w-12 text-center text-on-background font-medium">{quantite}</span>
             <button
               onClick={() => setQuantite(quantite + 1)}
-              className="p-2.5 text-dark-500 hover:text-white transition-colors"
+              className="p-2.5 text-secondary hover:text-on-background transition-colors"
             >
               <Plus className="w-4 h-4" />
             </button>

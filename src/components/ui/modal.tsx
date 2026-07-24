@@ -33,18 +33,18 @@ function Modal({ isOpen, onClose, children, className }: ModalProps) {
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-on-background/30 backdrop-blur-sm"
       onClick={(e) => e.target === overlayRef.current && onClose()}
     >
       <div
         className={cn(
-          "relative w-full max-w-lg mx-4 bg-dark-50 border border-dark-200 rounded-xl p-6 animate-fade-in-up",
+          "relative w-full max-w-lg mx-4 bg-background border border-outline-variant/40 rounded-xl p-6 animate-fade-in-up shadow-xl",
           className
         )}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-dark-500 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-secondary hover:text-on-background transition-colors"
         >
           <X className="w-5 h-5" />
         </button>

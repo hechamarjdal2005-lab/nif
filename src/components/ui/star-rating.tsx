@@ -24,10 +24,10 @@ function StarRating({ rating, size = "md", className }: StarRatingProps) {
           className={cn(
             sizes[size],
             star <= rating
-              ? "fill-gold text-gold"
+              ? "fill-primary text-primary"
               : star - 0.5 <= rating
-              ? "fill-gold/50 text-gold"
-              : "fill-dark-300 text-dark-300"
+              ? "fill-primary/50 text-primary"
+              : "fill-outline-variant/40 text-outline-variant/40"
           )}
         />
       ))}

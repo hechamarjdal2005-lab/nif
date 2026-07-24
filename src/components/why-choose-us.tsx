@@ -43,11 +43,11 @@ export function WhyChooseUs() {
   }, []);
 
   return (
-    <section className="py-16 px-4 sm:px-6 bg-dark">
+    <section className="py-16 px-4 sm:px-6 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="font-heading text-2xl sm:text-3xl gold-text mb-3">{content.title}</h2>
-          <p className="text-dark-500 max-w-xl mx-auto">
+          <h2 className="font-heading text-on-background text-3xl sm:text-4xl leading-tight font-medium mb-3">{content.title}</h2>
+          <p className="text-secondary text-base max-w-xl mx-auto">
             {content.subtitle}
           </p>
         </div>
@@ -58,13 +58,13 @@ export function WhyChooseUs() {
             return (
               <div
                 key={feature.title}
-                className="text-center p-5 rounded-lg border border-dark-200 hover:border-gold/20 transition-all duration-300 hover-lift"
+                className="text-center bg-background border border-outline-variant/40 rounded-xl p-6 hover:border-primary/20 transition-all duration-300 hover-lift"
               >
-                <div className="w-11 h-11 mx-auto mb-3 rounded-full bg-gold/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-gold" />
+                <div className="w-11 h-11 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-primary" />
                 </div>
-                <h3 className="font-heading text-base text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-dark-500 leading-relaxed">{feature.description}</p>
+                <h3 className="font-heading text-on-background text-base mb-2">{feature.title}</h3>
+                <p className="text-sm text-secondary leading-relaxed">{feature.description}</p>
               </div>
             );
           })}

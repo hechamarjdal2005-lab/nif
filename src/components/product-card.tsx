@@ -21,13 +21,13 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
   return (
     <div
       className={cn(
-        "group relative bg-dark-50 border border-dark-200 rounded-lg overflow-hidden hover-lift",
+        "group relative bg-background border border-outline-variant/40 rounded-xl overflow-hidden hover-lift",
         className
       )}
     >
       {/* Image */}
       <Link href={product.type === "pack" ? `/pack/${product.slug}` : `/produit/${product.slug}`}>
-        <div className="relative aspect-[3/4] overflow-hidden bg-dark">
+        <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low">
           {product.images && product.images[0] ? (
             <Image
               src={getImageUrl(product.images[0])}
@@ -37,11 +37,11 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-dark-400">
+            <div className="w-full h-full flex items-center justify-center text-outline-variant">
               <span className="text-4xl">✦</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-on-background/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
@@ -55,28 +55,28 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
       <div className="p-3">
         <div className="flex items-center justify-between mb-2">
           <StarRating rating={product.rating_avg} size="sm" />
-          <span className="text-xs text-dark-500 capitalize">{product.genre}</span>
+          <span className="text-xs text-secondary capitalize">{product.genre}</span>
         </div>
 
         <Link href={product.type === "pack" ? `/pack/${product.slug}` : `/produit/${product.slug}`}>
-          <h3 className="font-heading text-base text-white group-hover:text-gold transition-colors mb-1 line-clamp-1">
+          <h3 className="font-heading text-base text-on-background group-hover:text-primary transition-colors mb-1 line-clamp-1">
             {product.nom}
           </h3>
         </Link>
 
         {product.notes_olfactives && (
-          <p className="text-xs text-dark-500 mb-3 line-clamp-1">{product.notes_olfactives}</p>
+          <p className="text-xs text-secondary mb-3 line-clamp-1">{product.notes_olfactives}</p>
         )}
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {discountedPrice && discountedPrice < product.prix ? (
               <>
-              <span className="text-sm text-gold font-semibold">{formatPrice(discountedPrice)}</span>
-                <span className="text-dark-500 text-sm line-through">{formatPrice(product.prix)}</span>
+              <span className="text-sm text-primary font-semibold">{formatPrice(discountedPrice)}</span>
+                <span className="text-secondary text-sm line-through">{formatPrice(product.prix)}</span>
               </>
             ) : (
-              <span className="text-sm text-gold font-semibold">{formatPrice(product.prix)}</span>
+              <span className="text-sm text-primary font-semibold">{formatPrice(product.prix)}</span>
             )}
           </div>
 
@@ -85,7 +85,7 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
               e.preventDefault();
               addItem(product);
             }}
-            className="p-1.5 bg-gold/10 text-gold rounded-md hover:bg-gold hover:text-black transition-all duration-300"
+            className="p-1.5 bg-primary/10 text-primary rounded-md hover:bg-primary hover:text-on-primary transition-all duration-300"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
           </button>

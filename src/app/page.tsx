@@ -47,8 +47,8 @@ export default async function HomePage() {
       {bestsellers.length > 0 && (
         <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="font-heading text-2xl sm:text-3xl gold-text mb-3">Best Sellers</h2>
-            <p className="text-dark-500 max-w-xl mx-auto">
+            <h2 className="font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium">Best Sellers</h2>
+            <p className="text-secondary max-w-xl mx-auto">
               Les parfums les plus plébiscités par notre clientèle
             </p>
           </div>
@@ -64,10 +64,10 @@ export default async function HomePage() {
 
       {/* Nouveautés */}
       {newProducts.length > 0 && (
-        <section className="py-16 px-4 sm:px-6 bg-dark max-w-6xl mx-auto">
+        <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="font-heading text-2xl sm:text-3xl gold-text mb-3">Nouveautés</h2>
-            <p className="text-dark-500 max-w-xl mx-auto">
+            <h2 className="font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium">Nouveautés</h2>
+            <p className="text-secondary max-w-xl mx-auto">
               Découvrez nos dernières créations
             </p>
           </div>

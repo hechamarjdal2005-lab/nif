@@ -25,7 +25,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Image Gallery */}
       <div>
-        <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-dark-50 border border-dark-200 mb-3 max-w-md">
+        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 mb-3 max-w-md">
           {images[selectedImage] ? (
             <Image
               src={getImageUrl(images[selectedImage])}
@@ -36,7 +36,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-dark-400">
+            <div className="w-full h-full flex items-center justify-center text-outline-variant">
               <span className="text-4xl">✦</span>
             </div>
           )}
@@ -48,7 +48,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 key={i}
                 onClick={() => setSelectedImage(i)}
                 className={`relative w-16 h-16 rounded-md overflow-hidden border-2 transition-colors ${
-                  i === selectedImage ? "border-gold" : "border-dark-200"
+                  i === selectedImage ? "border-primary" : "border-outline-variant/40"
                 }`}
               >
                 <Image src={getImageUrl(img)} alt="" fill className="object-cover" sizes="80px" />
@@ -66,28 +66,28 @@ export function ProductDetail({ product }: ProductDetailProps) {
           {product.category && <Badge variant="outline">{product.category.nom}</Badge>}
         </div>
 
-        <h1 className="font-heading text-2xl sm:text-3xl text-white mb-3">{product.nom}</h1>
+        <h1 className="font-heading text-2xl sm:text-3xl text-on-background mb-3">{product.nom}</h1>
 
         <div className="flex items-center gap-3 mb-5">
           <StarRating rating={product.rating_avg} size="md" />
-          <span className="text-dark-500 text-sm capitalize">{product.genre}</span>
+          <span className="text-secondary text-sm capitalize">{product.genre}</span>
         </div>
 
         <div className="flex items-baseline gap-3 mb-5">
-          <span className="text-2xl font-semibold gold-text">{formatPrice(product.prix)}</span>
+          <span className="text-primary text-2xl font-semibold">{formatPrice(product.prix)}</span>
         </div>
 
         {product.notes_olfactives && (
           <div className="mb-5">
-            <h3 className="text-sm font-medium text-dark-500 uppercase tracking-wider mb-2">Notes Olfactives</h3>
-            <p className="text-white">{product.notes_olfactives}</p>
+            <h3 className="text-sm font-medium text-secondary uppercase tracking-[0.1em] mb-2">Notes Olfactives</h3>
+            <p className="text-on-background">{product.notes_olfactives}</p>
           </div>
         )}
 
         {product.description && (
           <div className="mb-5">
-            <h3 className="text-sm font-medium text-dark-500 uppercase tracking-wider mb-2">Description</h3>
-            <p className="text-dark-500 leading-relaxed">{product.description}</p>
+            <h3 className="text-sm font-medium text-secondary uppercase tracking-[0.1em] mb-2">Description</h3>
+            <p className="text-secondary leading-relaxed">{product.description}</p>
           </div>
         )}
 
@@ -99,17 +99,17 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
         {/* Quantity & Add to Cart */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center border border-dark-200 rounded-lg">
+          <div className="flex items-center border border-outline-variant/40 rounded-lg">
             <button
               onClick={() => setQuantite(Math.max(1, quantite - 1))}
-              className="p-2.5 text-dark-500 hover:text-white transition-colors"
+              className="p-2.5 text-secondary hover:text-on-background transition-colors"
             >
               <Minus className="w-4 h-4" />
             </button>
-            <span className="w-12 text-center text-white font-medium">{quantite}</span>
+            <span className="w-12 text-center text-on-background font-medium">{quantite}</span>
             <button
               onClick={() => setQuantite(quantite + 1)}
-              className="p-2.5 text-dark-500 hover:text-white transition-colors"
+              className="p-2.5 text-secondary hover:text-on-background transition-colors"
             >
               <Plus className="w-4 h-4" />
             </button>

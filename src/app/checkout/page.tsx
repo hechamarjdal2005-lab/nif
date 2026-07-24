@@ -127,8 +127,8 @@ export default function CheckoutPage() {
         <Navbar />
         <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
           <div className="animate-pulse space-y-4">
-            <div className="h-10 w-48 bg-dark-100 rounded" />
-            <div className="h-64 bg-dark-100 rounded-xl" />
+            <div className="h-10 w-48 bg-surface-container-low rounded" />
+            <div className="h-64 bg-surface-container-low rounded-xl" />
           </div>
         </div>
         <Footer />
@@ -141,9 +141,9 @@ export default function CheckoutPage() {
       <main>
         <Navbar />
         <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto text-center">
-          <CheckCircle className="w-20 h-20 text-gold mx-auto mb-6" />
-          <h1 className="font-heading text-3xl gold-text mb-4">Commande Passée !</h1>
-          <p className="text-dark-500 mb-8">
+          <CheckCircle className="w-20 h-20 text-primary mx-auto mb-6" />
+          <h1 className="font-heading text-on-background text-3xl sm:text-4xl mb-4 font-medium">Commande Passée !</h1>
+          <p className="text-secondary mb-8">
             Merci pour votre commande. Nous vous contacterons bientôt pour la livraison.
           </p>
           <Button onClick={() => router.push("/")}>Retour à l&apos;accueil</Button>
@@ -173,42 +173,42 @@ export default function CheckoutPage() {
     <main>
       <Navbar />
       <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <h1 className="font-heading text-3xl sm:text-4xl gold-text mb-8">Checkout</h1>
+        <h1 className="font-heading text-on-background text-3xl sm:text-4xl mb-8 font-medium">Checkout</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-2 space-y-6">
-            <h2 className="font-heading text-xl text-white">Informations de Livraison</h2>
+            <h2 className="font-heading text-on-background text-xl">Informations de Livraison</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Input placeholder="Nom complet *" {...register("nom")} className="bg-dark" />
-                {errors.nom && <p className="text-red-400 text-xs mt-1">Nom requis</p>}
+                <Input placeholder="Nom complet *" {...register("nom")} className="bg-surface-container-low" />
+                {errors.nom && <p className="text-red-500 text-xs mt-1">Nom requis</p>}
               </div>
               <div>
-                <Input placeholder="Téléphone *" {...register("tel")} className="bg-dark" />
-                {errors.tel && <p className="text-red-400 text-xs mt-1">Téléphone requis</p>}
+                <Input placeholder="Téléphone *" {...register("tel")} className="bg-surface-container-low" />
+                {errors.tel && <p className="text-red-500 text-xs mt-1">Téléphone requis</p>}
               </div>
             </div>
 
             <div>
-              <Input type="email" placeholder="Email (optionnel)" {...register("email")} className="bg-dark" />
+              <Input type="email" placeholder="Email (optionnel)" {...register("email")} className="bg-surface-container-low" />
             </div>
 
             <div>
-              <Input placeholder="Adresse complète *" {...register("adresse")} className="bg-dark" />
-              {errors.adresse && <p className="text-red-400 text-xs mt-1">Adresse requise</p>}
+              <Input placeholder="Adresse complète *" {...register("adresse")} className="bg-surface-container-low" />
+              {errors.adresse && <p className="text-red-500 text-xs mt-1">Adresse requise</p>}
             </div>
 
             <div>
-              <Input placeholder="Ville *" {...register("ville")} className="bg-dark" />
-              {errors.ville && <p className="text-red-400 text-xs mt-1">Ville requise</p>}
+              <Input placeholder="Ville *" {...register("ville")} className="bg-surface-container-low" />
+              {errors.ville && <p className="text-red-500 text-xs mt-1">Ville requise</p>}
             </div>
 
             {/* Promo Code */}
-            <div className="border border-dark-200 rounded-xl p-4">
-              <h3 className="text-sm font-medium text-white mb-3 flex items-center gap-2">
-                <Tag className="w-4 h-4 text-gold" />
+            <div className="border border-outline-variant/40 rounded-xl p-4">
+              <h3 className="text-sm font-medium text-on-background mb-3 flex items-center gap-2">
+                <Tag className="w-4 h-4 text-primary" />
                 Code Promo
               </h3>
               <div className="flex gap-2">
@@ -216,16 +216,16 @@ export default function CheckoutPage() {
                   placeholder="Entrez votre code"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                  className="bg-dark flex-1"
+                  className="bg-surface-container-low flex-1"
                 />
                 <Button type="button" variant="outline" onClick={handleApplyPromo} disabled={isCheckingPromo}>
                   {isCheckingPromo ? "..." : "Appliquer"}
                 </Button>
               </div>
-              {promoError && <p className="text-red-400 text-xs mt-2">{promoError}</p>}
+              {promoError && <p className="text-red-500 text-xs mt-2">{promoError}</p>}
               {promoResult && (
-                <p className="text-green-400 text-xs mt-2">
-                  ✓ Réduction de {formatPrice(promoResult.reduction)} appliquée !
+                <p className="text-green-600 text-xs mt-2">
+                  Réduction de {formatPrice(promoResult.reduction)} appliquée !
                 </p>
               )}
             </div>
@@ -233,47 +233,47 @@ export default function CheckoutPage() {
             <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Traitement en cours..." : `Payer ${formatPrice(total)}`}
             </Button>
-            <p className="text-xs text-dark-500 text-center">
+            <p className="text-xs text-secondary text-center">
               Paiement à la livraison (Cash on Delivery)
             </p>
           </form>
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="p-6 rounded-xl border border-dark-200 bg-dark-50 sticky top-24">
-              <h2 className="font-heading text-xl text-white mb-4">Votre Commande</h2>
+            <div className="p-6 rounded-xl border border-outline-variant/40 bg-background sticky top-24">
+              <h2 className="font-heading text-on-background text-xl mb-4">Votre Commande</h2>
               <div className="space-y-3 mb-4">
                 {items.map((item) => (
                   <div key={item.product.id} className="flex justify-between text-sm">
-                    <span className="text-dark-500 truncate flex-1 mr-2">
+                    <span className="text-secondary truncate flex-1 mr-2">
                       {item.product.nom} × {item.quantite}
                     </span>
-                    <span className="text-white whitespace-nowrap">
+                    <span className="text-on-background whitespace-nowrap">
                       {formatPrice(item.product.prix * item.quantite)}
                     </span>
                   </div>
                 ))}
               </div>
-              <hr className="border-dark-200 mb-4" />
+              <hr className="border-outline-variant/40 mb-4" />
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-dark-500">Sous-total</span>
-                  <span className="text-white">{formatPrice(subtotal)}</span>
+                  <span className="text-secondary">Sous-total</span>
+                  <span className="text-on-background">{formatPrice(subtotal)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-green-400">Réduction</span>
-                    <span className="text-green-400">-{formatPrice(discount)}</span>
+                    <span className="text-green-600">Réduction</span>
+                    <span className="text-green-600">-{formatPrice(discount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
-                  <span className="text-dark-500">Livraison</span>
-                  <span className="text-gold">Gratuite</span>
+                  <span className="text-secondary">Livraison</span>
+                  <span className="text-primary">Gratuite</span>
                 </div>
-                <hr className="border-dark-200" />
+                <hr className="border-outline-variant/40" />
                 <div className="flex justify-between">
-                  <span className="text-white font-medium">Total</span>
-                  <span className="text-gold font-semibold text-lg">{formatPrice(total)}</span>
+                  <span className="text-on-background font-medium">Total</span>
+                  <span className="text-primary font-semibold text-lg">{formatPrice(total)}</span>
                 </div>
               </div>
             </div>

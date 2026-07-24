@@ -36,6 +36,16 @@ const config: Config = {
           900: "#F5F5F5",
         },
         darker: "#0A0A0A",
+        primary: {
+          DEFAULT: "#4e6053",
+          on: "#ffffff",
+        },
+        "on-primary": "#ffffff",
+        background: "#fcf9f8",
+        "on-background": "#1b1c1c",
+        secondary: "#5e5e5b",
+        "outline-variant": "#c3c8c2",
+        "surface-container-low": "#f6f3f2",
       },
       fontFamily: {
         heading: ["var(--font-playfair)", "serif"],
@@ -67,6 +77,8 @@ const config: Config = {
       },
       backgroundImage: {
         "gradient-gold": "linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%)",
+        "hero-gradient": "linear-gradient(to right, #fcf9f8 0%, #fcf9f8 40%, rgba(252,249,248,0.8) 55%, rgba(252,249,248,0) 75%)",
+        "hero-gradient-mobile": "linear-gradient(to bottom, #fcf9f8 0%, #fcf9f8 30%, rgba(252,249,248,0.85) 50%, rgba(252,249,248,0.3) 75%, rgba(252,249,248,0) 100%)",
       },
     },
   },

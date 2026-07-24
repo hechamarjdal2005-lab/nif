@@ -54,7 +54,7 @@ export function CollectionContent({
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-secondary" />
           <Input
             placeholder="Rechercher un parfum..."
             value={search}
@@ -62,7 +62,7 @@ export function CollectionContent({
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
-            className="pl-10 bg-dark-50"
+            className="pl-10 bg-surface-container-low"
           />
         </div>
       </div>
@@ -85,7 +85,7 @@ export function CollectionContent({
                 setCurrentPage(1);
               }}
               className={cn(
-                selectedGenre !== g.value && "border-dark-200 text-dark-500 hover:text-gold hover:border-gold/30"
+                selectedGenre !== g.value && "border-outline-variant text-secondary hover:text-primary hover:border-primary/30"
               )}
             >
               {g.label}
@@ -105,7 +105,7 @@ export function CollectionContent({
               setCurrentPage(1);
             }}
             className={cn(
-              selectedCategory !== "all" && "border-dark-200 text-dark-500 hover:text-gold hover:border-gold/30"
+              selectedCategory !== "all" && "border-outline-variant text-secondary hover:text-primary hover:border-primary/30"
             )}
           >
             Toutes catégories
@@ -120,7 +120,7 @@ export function CollectionContent({
                 setCurrentPage(1);
               }}
               className={cn(
-                selectedCategory !== cat.id && "border-dark-200 text-dark-500 hover:text-gold hover:border-gold/30"
+                selectedCategory !== cat.id && "border-outline-variant text-secondary hover:text-primary hover:border-primary/30"
               )}
             >
               {cat.nom}
@@ -130,7 +130,7 @@ export function CollectionContent({
       )}
 
       {/* Results count */}
-      <p className="text-sm text-dark-500 mb-5">
+      <p className="text-sm text-secondary mb-5">
         {filteredProducts.length} produit{filteredProducts.length !== 1 ? "s" : ""} trouvé{filteredProducts.length !== 1 ? "s" : ""}
       </p>
 

@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --background: #0A0A0A;
-    --foreground: #F5F5F5;
+    --background: #fcf9f8;
+    --foreground: #1b1c1c;
   }
 
   * {
@@ -27,52 +27,71 @@
   }
 
   ::selection {
-    background-color: rgba(212, 175, 55, 0.3);
-    color: white;
+    background-color: rgba(78, 96, 83, 0.2);
+    color: #1b1c1c;
   }
 
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #121212;
+    background: #f6f3f2;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #D4AF37;
-    border-radius: 4px;
+    background: #c3c8c2;
+    border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #B8932A;
+    background: #4e6053;
   }
 }
 
 @layer components {
-  .glass {
-    background: rgba(18, 18, 18, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.1);
+  .hero-section {
+    background-color: #fcf9f8;
   }
 
-  .gold-gradient {
-    background: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%);
+  .hero-overlay {
+    background: linear-gradient(to right, #fcf9f8 0%, #fcf9f8 40%, rgba(252,249,248,0.8) 55%, rgba(252,249,248,0) 75%);
   }
 
-  .gold-text {
-    background: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  @media (max-width: 768px) {
+    .hero-overlay {
+      background: linear-gradient(to bottom, #fcf9f8 0%, #fcf9f8 30%, rgba(252,249,248,0.85) 50%, rgba(252,249,248,0.3) 75%, rgba(252,249,248,0) 100%);
+    }
   }
 
-  .text-gradient {
-    background: linear-gradient(135deg, #D4AF37, #F5E6A3);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .hero-reveal {
+    animation: heroReveal 0.8s ease-out forwards;
+  }
+
+  .hero-reveal-delay-1 {
+    animation: heroReveal 0.8s ease-out 0.15s forwards;
+    opacity: 0;
+  }
+
+  .hero-reveal-delay-2 {
+    animation: heroReveal 0.8s ease-out 0.3s forwards;
+    opacity: 0;
+  }
+
+  .hero-reveal-delay-3 {
+    animation: heroReveal 0.8s ease-out 0.45s forwards;
+    opacity: 0;
+  }
+
+  @keyframes heroReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .hover-lift {
@@ -81,7 +100,7 @@
 
   .hover-lift:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 32px rgba(78, 96, 83, 0.08);
   }
 }
 

@@ -92,35 +92,35 @@ export function ContactForm() {
   };
 
   return (
-    <section id="contact" className="bg-dark px-4 py-16 sm:px-6">
+    <section id="contact" className="px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 text-center">
-          <h2 className="font-heading mb-3 text-2xl gold-text sm:text-3xl">Contactez-Nous</h2>
-          <p className="text-dark-500">
+          <h2 className="font-heading mb-3 text-3xl text-on-background">Contactez-Nous</h2>
+          <p className="text-secondary">
             Une question ? Un besoin special ? Nous sommes a votre ecoute.
           </p>
         </div>
 
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-lg border border-dark-200 bg-darker/40 p-5 sm:p-6">
+          <div className="rounded-xl border border-outline-variant/40 bg-background p-6">
             {isSubmitted ? (
               <div className="py-8 text-center">
-                <CheckCircle className="mx-auto mb-3 h-12 w-12 text-gold" />
-                <h3 className="font-heading mb-2 text-xl text-white">Message Envoye !</h3>
-                <p className="text-dark-500">Nous vous repondrons dans les plus brefs delais.</p>
+                <CheckCircle className="mx-auto mb-3 h-12 w-12 text-primary" />
+                <h3 className="font-heading mb-2 text-xl text-on-background">Message Envoye !</h3>
+                <p className="text-secondary">Nous vous repondrons dans les plus brefs delais.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
-                  <Input placeholder="Votre nom" {...register("nom")} className="bg-dark" />
+                  <Input placeholder="Votre nom" {...register("nom")} className="bg-surface-container-low" />
                   {errors.nom && <p className="mt-1 text-xs text-red-400">{errors.nom.message}</p>}
                 </div>
                 <div>
-                  <Input type="email" placeholder="Votre email" {...register("email")} className="bg-dark" />
+                  <Input type="email" placeholder="Votre email" {...register("email")} className="bg-surface-container-low" />
                   {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email.message}</p>}
                 </div>
                 <div>
-                  <Textarea placeholder="Votre message..." rows={5} {...register("message")} className="bg-dark" />
+                  <Textarea placeholder="Votre message..." rows={5} {...register("message")} className="bg-surface-container-low" />
                   {errors.message && <p className="mt-1 text-xs text-red-400">{errors.message.message}</p>}
                 </div>
                 {error && <p className="text-sm text-red-400">{error}</p>}
@@ -132,9 +132,9 @@ export function ContactForm() {
             )}
           </div>
 
-          <div className="rounded-lg border border-dark-200 bg-darker/40 p-5 sm:p-6">
-            <h3 className="font-heading mb-2 text-xl text-white">Reseaux sociaux</h3>
-            <p className="mb-5 text-sm text-dark-500">
+          <div className="rounded-xl border border-outline-variant/40 bg-background p-6">
+            <h3 className="font-heading mb-2 text-xl text-on-background">Reseaux sociaux</h3>
+            <p className="mb-5 text-sm text-secondary">
               Contactez-nous directement sur votre canal prefere.
             </p>
 
@@ -145,14 +145,14 @@ export function ContactForm() {
                   href={link.href}
                   target={link.href.startsWith("http") ? "_blank" : undefined}
                   rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-                  className="flex items-center gap-3 rounded-lg border border-dark-200 bg-dark/60 p-3 text-left transition-colors hover:border-gold/40 hover:text-gold"
+                  className="flex items-center gap-3 rounded-lg border border-outline-variant/40 bg-surface-container-low p-3 text-left transition-colors hover:border-primary/40 hover:text-primary"
                 >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold/10 text-gold">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <SocialIcon platform={link.platform} />
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-sm font-medium text-white">{link.label}</span>
-                    <span className="block truncate text-xs text-dark-500">{link.value}</span>
+                    <span className="block text-sm font-medium text-on-background">{link.label}</span>
+                    <span className="block truncate text-xs text-secondary">{link.value}</span>
                   </span>
                 </a>
               ))}

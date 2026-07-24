@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${playfair.variable} ${montserrat.variable}`}>
-      <body className="font-body antialiased bg-darker text-white min-h-screen">
+      <body className="font-body antialiased bg-background text-on-background min-h-screen">
         <CartProvider>{children}</CartProvider>
       </body>
     </html>

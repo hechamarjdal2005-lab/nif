@@ -42,7 +42,7 @@ export function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
-            ? "glass py-2"
+            ? "bg-background/90 backdrop-blur-md border-b border-outline-variant/40 py-2 shadow-sm"
             : "bg-transparent py-3"
         )}
       >
@@ -60,7 +60,10 @@ export function Navbar() {
                   priority
                 />
               ) : (
-                <h1 className="font-heading text-lg sm:text-xl gold-text tracking-wider">
+                <h1 className={cn(
+                  "font-heading text-lg sm:text-xl tracking-wider transition-colors duration-300",
+                  isScrolled ? "text-primary" : "text-on-background"
+                )}>
                   {SITE_NAME}
                 </h1>
               )}
@@ -72,7 +75,12 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs text-dark-600 hover:text-gold transition-colors duration-300 tracking-wide uppercase font-medium"
+                  className={cn(
+                    "text-xs tracking-[0.12em] uppercase font-medium transition-colors duration-300",
+                    isScrolled
+                      ? "text-on-background/60 hover:text-primary"
+                      : "text-on-background/60 hover:text-primary"
+                  )}
                 >
                   {link.label}
                 </Link>
@@ -83,18 +91,28 @@ export function Navbar() {
             <div className="flex items-center space-x-3">
               <Link
                 href="/panier"
-                className="relative p-1.5 text-dark-600 hover:text-gold transition-colors"
+                className={cn(
+                  "relative p-1.5 transition-colors",
+                  isScrolled
+                    ? "text-on-background/60 hover:text-primary"
+                    : "text-on-background/60 hover:text-primary"
+                )}
               >
                 <ShoppingBag className="w-4 h-4" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-gold text-black text-[10px] font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-primary text-on-primary text-[10px] font-bold rounded-full flex items-center justify-center">
                     {itemCount}
                   </span>
                 )}
               </Link>
               <button
                 onClick={() => setIsMobileOpen(true)}
-                className="md:hidden p-1.5 text-dark-600 hover:text-gold transition-colors"
+                className={cn(
+                  "md:hidden p-1.5 transition-colors",
+                  isScrolled
+                    ? "text-on-background/60 hover:text-primary"
+                    : "text-on-background/60 hover:text-primary"
+                )}
               >
                 <Menu className="w-4 h-4" />
               </button>
@@ -107,13 +125,13 @@ export function Navbar() {
       {isMobileOpen && (
         <div className="fixed inset-0 z-[60] md:hidden">
           <div
-            className="absolute inset-0 bg-black/60"
+            className="absolute inset-0 bg-black/30"
             onClick={() => setIsMobileOpen(false)}
           />
-          <div className="absolute right-0 top-0 h-full w-64 bg-dark border-l border-dark-200 p-5 animate-slide-in">
+          <div className="absolute right-0 top-0 h-full w-64 bg-background border-l border-outline-variant/40 p-5 animate-slide-in shadow-xl">
             <button
               onClick={() => setIsMobileOpen(false)}
-              className="absolute top-4 right-4 text-dark-500 hover:text-white"
+              className="absolute top-4 right-4 text-secondary hover:text-on-background"
             >
               <X className="w-5 h-5" />
             </button>
@@ -123,13 +141,12 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileOpen(false)}
-                  className="text-base text-dark-600 hover:text-gold transition-colors tracking-wide uppercase font-medium"
+                  className="text-base text-secondary hover:text-primary transition-colors tracking-wide uppercase font-medium"
                 >
                   {link.label}
                 </Link>
               ))}
-              <hr className="border-dark-200" />
-              
+              <hr className="border-outline-variant/40" />
             </div>
           </div>
         </div>

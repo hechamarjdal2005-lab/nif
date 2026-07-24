@@ -12,11 +12,11 @@ function Badge({ children, variant = "default", className }: BadgeProps) {
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors",
         {
-          "bg-gold/20 text-gold": variant === "default",
-          "border border-gold/30 text-gold": variant === "outline",
-          "bg-green-500/20 text-green-400": variant === "success",
-          "bg-yellow-500/20 text-yellow-400": variant === "warning",
-          "bg-red-500/20 text-red-400": variant === "destructive",
+          "bg-primary/10 text-primary": variant === "default",
+          "border border-outline-variant text-primary": variant === "outline",
+          "bg-green-500/10 text-green-700": variant === "success",
+          "bg-amber-500/10 text-amber-700": variant === "warning",
+          "bg-red-500/10 text-red-600": variant === "destructive",
         },
         className
       )}

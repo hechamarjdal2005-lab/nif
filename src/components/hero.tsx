@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { SITE_NAME } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 
@@ -46,56 +45,61 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-[82vh] flex items-center justify-center overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-darker">
-        {content.background_image_url ? (
+    <section className="hero-section relative h-screen min-h-[700px] flex items-center overflow-hidden">
+      {/* Background image */}
+      {content.background_image_url ? (
+        <div className="absolute inset-0">
           <img
             src={content.background_image_url}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
           />
-        ) : null}
-        <div className="absolute inset-0 bg-gradient-to-b from-darker via-darker/60 to-darker" />
-        <div className="absolute inset-0 bg-gradient-to-r from-darker via-transparent to-darker" />
-        {/* Decorative gold lines */}
-        <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
-        <div className="absolute top-3/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
-        <div className="absolute top-0 left-1/4 w-full h-px bg-gradient-to-b from-gold/10 via-transparent to-transparent" />
-        <div className="absolute top-0 right-1/4 w-full h-px bg-gradient-to-b from-gold/10 via-transparent to-transparent" />
-      </div>
+        </div>
+      ) : null}
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
-        <div className="animate-fade-in-up">
-          <p className="text-gold text-xs sm:text-sm uppercase tracking-[0.24em] mb-4 font-medium">
+      {/* Gradient overlay — cream left → transparent right */}
+      <div className="hero-overlay absolute inset-0 z-[1]" />
+
+      {/* Content — left aligned */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="max-w-2xl">
+          {/* Tagline */}
+          <p className="hero-reveal font-body text-primary text-xs sm:text-sm uppercase tracking-[0.2em] mb-4 sm:mb-5 font-medium">
             {content.subtitle}
           </p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl gold-text mb-4 leading-tight">
+
+          {/* Title */}
+          <h1 className="hero-reveal-delay-1 font-heading text-on-background text-[36px] sm:text-[44px] lg:text-[52px] leading-[1.05] tracking-[-0.02em] mb-5 sm:mb-6 font-medium">
             {content.title}
           </h1>
-          <p className="text-dark-500 text-base sm:text-lg max-w-xl mx-auto mb-7 font-light leading-relaxed">
+
+          {/* Description */}
+          <p className="hero-reveal-delay-2 font-body text-secondary text-base sm:text-lg leading-relaxed mb-8 sm:mb-10 max-w-lg font-normal">
             {content.description}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href={content.button_primary_link}>
-              <Button className="px-7">
-                {content.button_primary_text}
-              </Button>
+
+          {/* Buttons */}
+          <div className="hero-reveal-delay-3 flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+            <Link
+              href={content.button_primary_link}
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-primary text-on-primary font-body text-sm uppercase tracking-[0.18em] font-medium rounded-none hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/10"
+            >
+              {content.button_primary_text}
             </Link>
-            <Link href={content.button_secondary_link}>
-              <Button variant="outline" className="px-7">
-                {content.button_secondary_text}
-              </Button>
+            <Link
+              href={content.button_secondary_link}
+              className="inline-flex items-center justify-center px-8 py-3.5 border border-primary text-primary font-body text-sm uppercase tracking-[0.18em] font-medium rounded-none hover:bg-primary hover:text-on-primary transition-all duration-300"
+            >
+              {content.button_secondary_text}
             </Link>
           </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-5 h-8 rounded-full border-2 border-gold/30 flex justify-center pt-2">
-          <div className="w-1 h-2 bg-gold rounded-full animate-pulse" />
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <div className="w-5 h-8 rounded-full border-2 border-primary/30 flex justify-center pt-2">
+          <div className="w-1 h-2 bg-primary/60 rounded-full animate-pulse" />
         </div>
       </div>
     </section>

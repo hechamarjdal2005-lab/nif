@@ -30,13 +30,13 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 rounded-lg text-dark-500 hover:text-gold hover:bg-dark-100 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+        className="p-2 rounded-lg text-secondary hover:text-primary hover:bg-surface-container-low disabled:opacity-30 disabled:pointer-events-none transition-colors"
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
       {pages.map((page, i) =>
         page === "..." ? (
-          <span key={`dots-${i}`} className="px-2 text-dark-500">...</span>
+          <span key={`dots-${i}`} className="px-2 text-secondary">...</span>
         ) : (
           <button
             key={page}
@@ -44,8 +44,8 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
             className={cn(
               "w-10 h-10 rounded-lg text-sm font-medium transition-all",
               page === currentPage
-                ? "bg-gold text-black"
-                : "text-dark-500 hover:text-white hover:bg-dark-100"
+                ? "bg-primary text-on-primary"
+                : "text-secondary hover:text-on-background hover:bg-surface-container-low"
             )}
           >
             {page}
@@ -55,7 +55,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 rounded-lg text-dark-500 hover:text-gold hover:bg-dark-100 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+        className="p-2 rounded-lg text-secondary hover:text-primary hover:bg-surface-container-low disabled:opacity-30 disabled:pointer-events-none transition-colors"
       >
         <ChevronRight className="w-4 h-4" />
       </button>

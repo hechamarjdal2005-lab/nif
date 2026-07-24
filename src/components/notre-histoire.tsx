@@ -12,11 +12,11 @@ type HistoireContent = {
 
 const FALLBACK: HistoireContent = {
   section_label: "Notre Histoire",
-  title: "Un Héritage de L\u2019Art Parfumeur",
+  title: "Un Héritage de L'Art Parfumeur",
   paragraphs: [
     "Fondée au cœur de Marrakech, Maison Nif Chrif perpétue la tradition millénaire de la parfumerie marocaine. Nos créations naissent de la rencontre entre les essences les plus précieuses du Royaume et un savoir-faire artisanal transmis de génération en génération.",
-    "Chaque flacon raconte une histoire — celle des souks animés, des jardins secrets, et des paysages grandioses du Maroc. Nous sélectionnons méticuleusement chaque ingrédient, de l\u2019oud du Souss à la rose de Kelaat M\u2019Gouna, pour créer des parfums qui évoquent l\u2019âme du Maroc.",
-    "Notre engagement : vous offrir des fragrances d\u2019exception, alliant tradition et modernité, dans le respect de l\u2019artisanat et de la nature.",
+    "Chaque flacon raconte une histoire — celle des souks animés, des jardins secrets, et des paysages grandioses du Maroc. Nous sélectionnons méticuleusement chaque ingrédient, de l'oud du Souss à la rose de Kelaat M'Gouna, pour créer des parfums qui évoquent l'âme du Maroc.",
+    "Notre engagement : vous offrir des fragrances d'exception, alliant tradition et modernité, dans le respect de l'artisanat et de la nature.",
   ],
   images: ["", "", "", ""],
 };
@@ -47,11 +47,11 @@ export function NotreHistoire() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         {/* Text */}
         <div>
-          <p className="text-gold text-xs uppercase tracking-[0.24em] mb-3 font-medium">{content.section_label}</p>
-          <h2 className="font-heading text-2xl sm:text-3xl text-white mb-4 leading-tight">
+          <p className="text-primary text-xs uppercase tracking-[0.2em] mb-3 font-medium">{content.section_label}</p>
+          <h2 className="font-heading text-on-background text-3xl sm:text-4xl leading-tight font-medium mb-4">
             {content.title}
           </h2>
-          <div className="space-y-3 text-sm sm:text-base text-dark-500 leading-relaxed">
+          <div className="space-y-3 text-secondary text-base leading-relaxed">
             {content.paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -62,22 +62,22 @@ export function NotreHistoire() {
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-3">
             {[0, 1].map((i) => (
-              <div key={i} className={`${ASPECT_CLASSES[i]} bg-dark-50 border border-dark-200 rounded-lg overflow-hidden flex items-center justify-center`}>
+              <div key={i} className={`${ASPECT_CLASSES[i]} bg-surface-container-low border border-outline-variant/40 rounded-xl overflow-hidden flex items-center justify-center`}>
                 {content.images[i] ? (
                   <img src={content.images[i]} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <span className={`text-dark-300 ${PLACEHOLDER_SIZES[i]}`}>{PLACEHOLDER_SYMBOLS[i]}</span>
+                  <span className={`text-outline-variant ${PLACEHOLDER_SIZES[i]}`}>{PLACEHOLDER_SYMBOLS[i]}</span>
                 )}
               </div>
             ))}
           </div>
           <div className="space-y-3 pt-6">
             {[2, 3].map((i) => (
-              <div key={i} className={`${ASPECT_CLASSES[i]} bg-dark-50 border border-dark-200 rounded-lg overflow-hidden flex items-center justify-center`}>
+              <div key={i} className={`${ASPECT_CLASSES[i]} bg-surface-container-low border border-outline-variant/40 rounded-xl overflow-hidden flex items-center justify-center`}>
                 {content.images[i] ? (
                   <img src={content.images[i]} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <span className={`text-dark-300 ${PLACEHOLDER_SIZES[i]}`}>{PLACEHOLDER_SYMBOLS[i]}</span>
+                  <span className={`text-outline-variant ${PLACEHOLDER_SIZES[i]}`}>{PLACEHOLDER_SYMBOLS[i]}</span>
                 )}
               </div>
             ))}
