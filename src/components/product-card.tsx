@@ -21,6 +21,8 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
   const { addItem } = useCart();
   const { locale } = useLanguage();
   const ar = locale === "ar";
+  const href = product.type === "pack" ? `/pack/${product.slug}` : `/produit/${product.slug}`;
+  const productName = getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale);
 
   return (
     <div
@@ -29,31 +31,31 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
         className
       )}
     >
-      {/* Image */}
-      <Link href={product.type === "pack" ? `/pack/${product.slug}` : `/produit/${product.slug}`}>
-        <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low">
-          {product.images && product.images[0] ? (
-            <Image
-              src={getImageUrl(product.images[0])}
-              alt={getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale)}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-outline-variant">
-              <span className="text-4xl">✦</span>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-on-background/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <Link href={href} className="absolute inset-0 z-10" aria-label={productName} />
 
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {product.is_new && <Badge variant="default">{getTranslation(locale, "product.nouveau")}</Badge>}
-            {product.is_bestseller && <Badge variant="outline">Best Seller</Badge>}
+      {/* Image */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low">
+        {product.images && product.images[0] ? (
+          <Image
+            src={getImageUrl(product.images[0])}
+            alt={productName}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-outline-variant">
+            <span className="text-4xl">*</span>
           </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-on-background/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {product.is_new && <Badge variant="default">{getTranslation(locale, "product.nouveau")}</Badge>}
+          {product.is_bestseller && <Badge variant="outline">Best Seller</Badge>}
         </div>
-      </Link>
+      </div>
 
       {/* Content */}
       <div className="p-3">
@@ -62,11 +64,9 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
           <span className="text-xs text-secondary capitalize">{product.genre}</span>
         </div>
 
-        <Link href={product.type === "pack" ? `/pack/${product.slug}` : `/produit/${product.slug}`}>
-          <h3 className={`font-heading text-base text-on-background group-hover:text-primary transition-colors mb-1 line-clamp-1 ${ar ? "font-arabic" : ""}`}>
-            {getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale)}
-          </h3>
-        </Link>
+        <h3 className={`font-heading text-base text-on-background group-hover:text-primary transition-colors mb-1 line-clamp-1 ${ar ? "font-arabic" : ""}`}>
+          {productName}
+        </h3>
 
         {product.notes_olfactives && (
           <p className="text-xs text-secondary mb-3 line-clamp-1">{product.notes_olfactives}</p>
@@ -76,7 +76,7 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
           <div className="flex items-center gap-2">
             {discountedPrice && discountedPrice < product.prix ? (
               <>
-              <span className="text-sm text-primary font-semibold">{formatPrice(discountedPrice)}</span>
+                <span className="text-sm text-primary font-semibold">{formatPrice(discountedPrice)}</span>
                 <span className="text-secondary text-sm line-through">{formatPrice(product.prix)}</span>
               </>
             ) : (
@@ -87,9 +87,10 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
           <button
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               addItem(product);
             }}
-            className="p-1.5 bg-primary/10 text-primary rounded-md hover:bg-primary hover:text-on-primary transition-all duration-300"
+            className="relative z-20 p-1.5 bg-primary/10 text-primary rounded-md hover:bg-primary hover:text-on-primary transition-all duration-300"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
           </button>
@@ -98,3 +99,4 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
     </div>
   );
 }
+

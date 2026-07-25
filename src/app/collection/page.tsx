@@ -44,7 +44,7 @@ export default function CollectionPage() {
             {getTranslation(locale, "collection.subtitle")}
           </p>
         </div>
-        <CollectionContent products={products} categories={categories} />
+        <CollectionContent products={products} categories={categories} showGenreFilter={false} />
       </div>
       <Footer />
     </main>

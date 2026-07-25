@@ -26,10 +26,10 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const images = product.images && product.images.length > 0 ? product.images : [];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1fr] gap-6 lg:gap-8">
       {/* Image Gallery */}
       <div>
-        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 mb-3 max-w-md">
+        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 mb-3 max-w-[340px] sm:max-w-[380px] lg:max-w-[360px]">
           {images[selectedImage] ? (
             <Image
               src={getImageUrl(images[selectedImage])}
@@ -70,7 +70,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           {product.category && <Badge variant="outline">{product.category.nom}</Badge>}
         </div>
 
-        <h1 className={`font-heading text-2xl sm:text-3xl text-on-background mb-3 ${ar ? "font-arabic" : ""}`}>{getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale)}</h1>
+        <h1 className={`font-heading text-2xl sm:text-[28px] text-on-background mb-3 ${ar ? "font-arabic" : ""}`}>{getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale)}</h1>
 
         <div className="flex items-center gap-3 mb-5">
           <StarRating rating={product.rating_avg} size="md" />
@@ -78,7 +78,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
         </div>
 
         <div className="flex items-baseline gap-3 mb-5">
-          <span className="text-primary text-2xl font-semibold">{formatPrice(product.prix)}</span>
+          <span className="text-primary text-xl sm:text-2xl font-semibold">{formatPrice(product.prix)}</span>
         </div>
 
         {product.notes_olfactives && (

@@ -9,7 +9,7 @@ async function getPack(slug: string) {
     const supabase = await createClient();
     const { data } = await supabase
       .from("products")
-      .select("*, category:categories(*), pack_items(*, product:products(*))")
+      .select("*, category:categories(*), pack_items:pack_items!pack_items_pack_id_fkey(*, product:products!pack_items_produit_id_fkey(*))")
       .eq("slug", slug)
       .eq("type", "pack")
       .single();
@@ -26,7 +26,7 @@ export default async function PackPage({ params }: { params: { slug: string } })
   return (
     <main>
       <Navbar />
-      <div className="pt-20 pb-12 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div className="pt-20 pb-12 px-4 sm:px-6 max-w-5xl mx-auto">
         <PackDetail pack={pack} />
       </div>
       <Footer />

@@ -34,7 +34,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
   return (
     <main>
       <Navbar />
-      <div className="pt-20 pb-12 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div className="pt-20 pb-12 px-4 sm:px-6 max-w-5xl mx-auto">
         <ProductDetail product={product} />
       </div>
       <Footer />

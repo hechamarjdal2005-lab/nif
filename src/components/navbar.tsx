@@ -18,6 +18,11 @@ const NAV_ITEMS = [
   { key: "nav.contact", href: "/#contact" },
 ] as const;
 
+function getNavLabel(locale: "fr" | "ar", key: (typeof NAV_ITEMS)[number]["key"]) {
+  if (key === "nav.contact") return "Contact";
+  return getTranslation(locale, key);
+}
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -104,7 +109,7 @@ export function Navbar() {
                         : "text-on-background/50 hover:text-primary hover:bg-primary/5"
                     )}
                   >
-                    {getTranslation(locale, item.key)}
+                    {getNavLabel(locale, item.key)}
                   </Link>
                 );
               })}
@@ -189,7 +194,7 @@ export function Navbar() {
                         : "text-secondary hover:text-primary hover:bg-primary/5"
                     )}
                   >
-                    {getTranslation(locale, item.key)}
+                    {getNavLabel(locale, item.key)}
                   </Link>
                 );
               })}

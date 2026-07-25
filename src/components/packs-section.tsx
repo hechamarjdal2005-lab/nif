@@ -34,7 +34,7 @@ export function PacksSection() {
         if (packsList.length > 0) {
           const { data: itemsData } = await supabase
             .from("pack_items")
-            .select("*, product:products(*)")
+            .select("*, product:products!pack_items_produit_id_fkey(*)")
             .in("pack_id", packsList.map((p) => p.id));
           const itemsByPack = new Map<string, (PackItem & { product?: Product })[]>();
           (itemsData || []).forEach((item: PackItem & { product?: Product }) => {

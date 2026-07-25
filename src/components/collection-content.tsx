@@ -21,6 +21,7 @@ interface CollectionContentProps {
 }
 
 const ITEMS_PER_PAGE = 8;
+const VISIBLE_CATEGORY_SLUGS = ["homme", "femme", "cadeaux", "packs"] as const;
 
 export function CollectionContent({
   products,
@@ -35,6 +36,13 @@ export function CollectionContent({
   const { locale } = useLanguage();
   const ar = locale === "ar";
 
+  const visibleCategories = useMemo(() => {
+    const categoriesBySlug = new Map(categories.map((category) => [category.slug, category]));
+    return VISIBLE_CATEGORY_SLUGS.map((slug) => categoriesBySlug.get(slug)).filter(
+      (category): category is Category => Boolean(category)
+    );
+  }, [categories]);
+
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const matchesSearch =
@@ -42,10 +50,16 @@ export function CollectionContent({
         p.nom.toLowerCase().includes(search.toLowerCase()) ||
         (p.notes_olfactives && p.notes_olfactives.toLowerCase().includes(search.toLowerCase()));
       const matchesGenre = selectedGenre === "all" || p.genre === selectedGenre;
-      const matchesCategory = selectedCategory === "all" || p.categorie_id === selectedCategory;
+      const selectedCategoryRecord = visibleCategories.find((category) => category.slug === selectedCategory);
+      const matchesCategory =
+        selectedCategory === "all" ||
+        (selectedCategory === "packs" && p.type === "pack") ||
+        (selectedCategory === "homme" && p.genre === "homme") ||
+        (selectedCategory === "femme" && p.genre === "femme") ||
+        (selectedCategoryRecord ? p.categorie_id === selectedCategoryRecord.id : false);
       return matchesSearch && matchesGenre && matchesCategory;
     });
-  }, [products, search, selectedGenre, selectedCategory]);
+  }, [products, search, selectedGenre, selectedCategory, visibleCategories]);
 
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const paginatedProducts = filteredProducts.slice(
@@ -99,37 +113,47 @@ export function CollectionContent({
       )}
 
       {/* Category Filter */}
-      {categories.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-6">
+      {visibleCategories.length > 0 && (
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-outline-variant/30 bg-background/90 px-2.5 py-2 shadow-sm backdrop-blur-md">
           <Button
-            variant={selectedCategory === "all" ? "default" : "outline"}
+            variant="ghost"
             size="sm"
             onClick={() => {
               setSelectedCategory("all");
               setCurrentPage(1);
             }}
             className={cn(
-              selectedCategory !== "all" && "border-outline-variant text-secondary hover:text-primary hover:border-primary/30"
+              "h-8 rounded-full px-3.5 text-[11px] font-medium uppercase tracking-[0.1em]",
+              selectedCategory === "all"
+                ? "bg-primary/10 text-primary"
+                : "text-on-background/50 hover:bg-primary/5 hover:text-primary",
+              ar && "font-arabic"
             )}
             >
               {getTranslation(locale, "collection.allCategories")}
             </Button>
-          {categories.map((cat) => (
+          {visibleCategories.map((cat) => (
             <Button
               key={cat.id}
-              variant={selectedCategory === cat.id ? "default" : "outline"}
+              variant="ghost"
               size="sm"
               onClick={() => {
-                setSelectedCategory(cat.id);
-                setCurrentPage(1);
-              }}
-              className={cn(
-                selectedCategory !== cat.id && "border-outline-variant text-secondary hover:text-primary hover:border-primary/30"
+              setSelectedCategory(cat.slug);
+              setCurrentPage(1);
+            }}
+            className={cn(
+              "h-8 rounded-full px-3.5 text-[11px] font-medium uppercase tracking-[0.1em]",
+                selectedCategory === cat.slug
+                  ? "bg-primary/10 text-primary"
+                  : "text-on-background/50 hover:bg-primary/5 hover:text-primary",
+                ar && "font-arabic"
               )}
             >
-              {cat.nom}
+              {locale === "ar" && cat.nom_ar ? cat.nom_ar : cat.nom}
             </Button>
           ))}
+          </div>
         </div>
       )}
 

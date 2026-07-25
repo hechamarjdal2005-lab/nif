@@ -44,6 +44,7 @@ export interface PackItem {
   pack_id: string;
   produit_id: string;
   quantite: number;
+  description: string | null;
   product?: Product;
 }
 
@@ -67,7 +68,7 @@ export interface Order {
   client_tel: string;
   client_email: string | null;
   client_adresse: string;
-  client_ville: string;
+  client_ville: string | null;
   total: number;
   promo_code_id: string | null;
   statut: OrderStatut;

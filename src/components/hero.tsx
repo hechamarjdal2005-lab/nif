@@ -49,7 +49,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="hero-section relative h-screen min-h-[700px] flex items-center overflow-hidden">
+    <section className={`hero-section relative min-h-[460px] sm:min-h-[500px] lg:min-h-[540px] flex items-center overflow-hidden py-20 sm:py-24 lg:py-28 ${isAr ? "hero-section-rtl" : ""}`}>
       {/* Background image */}
       {content.background_image_url ? (
         <div className="absolute inset-0">
@@ -65,34 +65,34 @@ export function Hero() {
       <div className="hero-overlay absolute inset-0 z-[1]" />
 
       {/* Content — left aligned */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className={`max-w-2xl ${isAr ? "dir-rtl" : ""}`} dir={isAr ? "rtl" : undefined}>
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-5 sm:px-8 lg:px-10">
+        <div className={`max-w-xl ${isAr ? "dir-rtl ml-auto text-right" : ""}`} dir={isAr ? "rtl" : undefined}>
           {/* Tagline */}
-          <p className={`hero-reveal font-body text-primary text-xs sm:text-sm uppercase tracking-[0.2em] mb-4 sm:mb-5 font-medium ${isAr ? "font-arabic" : ""}`}>
+          <p className={`hero-reveal font-body text-primary text-[10px] sm:text-xs uppercase tracking-[0.16em] mb-2.5 sm:mb-3 font-medium ${isAr ? "font-arabic tracking-normal" : ""}`}>
             {getLocalizedField(content, "subtitle", locale) || getTranslation(locale, "hero.subtitle")}
           </p>
 
           {/* Title */}
-          <h1 className={`hero-reveal-delay-1 font-heading text-on-background text-[36px] sm:text-[44px] lg:text-[52px] leading-[1.05] tracking-[-0.02em] mb-5 sm:mb-6 font-medium ${isAr ? "font-arabic" : ""}`}>
+          <h1 className="hero-reveal-delay-1 font-heading text-on-background text-[32px] sm:text-[38px] lg:text-[46px] leading-[1.02] tracking-normal mb-3 sm:mb-4 font-medium">
             {getLocalizedField(content, "title", locale)}
           </h1>
 
           {/* Description */}
-          <p className={`hero-reveal-delay-2 font-body text-secondary text-base sm:text-lg leading-relaxed mb-8 sm:mb-10 max-w-lg font-normal ${isAr ? "font-arabic" : ""}`}>
+          <p className={`hero-reveal-delay-2 font-body text-secondary text-sm sm:text-[15px] leading-relaxed mb-5 sm:mb-6 max-w-md font-normal ${isAr ? "font-arabic ml-auto" : ""}`}>
             {getLocalizedField(content, "description", locale) || getTranslation(locale, "hero.description")}
           </p>
 
           {/* Buttons */}
-          <div className="hero-reveal-delay-3 flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+          <div className={`hero-reveal-delay-3 flex flex-col sm:flex-row gap-2.5 sm:gap-3 ${isAr ? "items-end sm:justify-end" : "items-start"}`}>
             <Link
               href={content.button_primary_link}
-              className={`inline-flex items-center justify-center px-8 py-3.5 bg-primary text-on-primary font-body text-sm uppercase tracking-[0.18em] font-medium rounded-none hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/10 ${isAr ? "font-arabic" : ""}`}
+              className={`inline-flex items-center justify-center px-6 py-3 bg-primary text-on-primary font-body text-xs uppercase tracking-[0.14em] font-medium rounded-none hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/10 ${isAr ? "font-arabic tracking-normal" : ""}`}
             >
               {getLocalizedField(content, "button_primary_text", locale) || getTranslation(locale, "hero.btnDiscover")}
             </Link>
             <Link
               href={content.button_secondary_link}
-              className={`inline-flex items-center justify-center px-8 py-3.5 border border-primary text-primary font-body text-sm uppercase tracking-[0.18em] font-medium rounded-none hover:bg-primary hover:text-on-primary transition-all duration-300 ${isAr ? "font-arabic" : ""}`}
+              className={`inline-flex items-center justify-center px-6 py-3 border border-primary text-primary font-body text-xs uppercase tracking-[0.14em] font-medium rounded-none hover:bg-primary hover:text-on-primary transition-all duration-300 ${isAr ? "font-arabic tracking-normal" : ""}`}
             >
               {getLocalizedField(content, "button_secondary_text", locale) || getTranslation(locale, "hero.btnCollection")}
             </Link>
@@ -101,8 +101,8 @@ export function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
-        <div className="w-5 h-8 rounded-full border-2 border-primary/30 flex justify-center pt-2">
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 hidden sm:block">
+        <div className="w-4 h-7 rounded-full border-2 border-primary/30 flex justify-center pt-1.5">
           <div className="w-1 h-2 bg-primary/60 rounded-full animate-pulse" />
         </div>
       </div>

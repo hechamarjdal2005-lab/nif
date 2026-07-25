@@ -30,12 +30,13 @@ export function PackDetail({ pack }: PackDetailProps) {
     0
   );
   const savings = totalSeparate - pack.prix;
+  const packDescription = getLocalizedField(pack as unknown as Record<string, unknown>, "description", locale);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1fr] gap-6 lg:gap-8">
       {/* Image */}
       <div>
-        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 max-w-md">
+        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 max-w-[340px] sm:max-w-[380px] lg:max-w-[360px]">
           {images[selectedImage] ? (
             <Image
               src={getImageUrl(images[selectedImage])}
@@ -71,10 +72,10 @@ export function PackDetail({ pack }: PackDetailProps) {
       {/* Info */}
       <div>
         <Badge variant="default" className="mb-3">{getTranslation(locale, "pack.coffret")}</Badge>
-        <h1 className={`font-heading text-on-background text-3xl mb-3 ${ar ? "font-arabic" : ""}`}>{getLocalizedField(pack as unknown as Record<string, unknown>, "nom", locale)}</h1>
+        <h1 className={`font-heading text-on-background text-2xl sm:text-[28px] mb-3 ${ar ? "font-arabic" : ""}`}>{getLocalizedField(pack as unknown as Record<string, unknown>, "nom", locale)}</h1>
 
         <div className="flex items-baseline gap-3 mb-4">
-          <span className="text-primary text-2xl font-semibold">{formatPrice(pack.prix)}</span>
+          <span className="text-primary text-xl sm:text-2xl font-semibold">{formatPrice(pack.prix)}</span>
           {savings > 0 && (
             <>
               <span className="text-secondary line-through">{formatPrice(totalSeparate)}</span>
@@ -83,28 +84,33 @@ export function PackDetail({ pack }: PackDetailProps) {
           )}
         </div>
 
-        {pack.description && (
-          <p className={`text-sm sm:text-base text-secondary leading-relaxed mb-5 ${ar ? "font-arabic" : ""}`}>{pack.description}</p>
+        {packDescription && (
+          <p className={`text-sm sm:text-base text-secondary leading-relaxed mb-5 ${ar ? "font-arabic" : ""}`}>{packDescription}</p>
         )}
 
         {/* Pack Contents */}
         <div className="mb-5">
           <h3 className={`text-xs font-medium text-secondary uppercase tracking-[0.1em] mb-3 ${ar ? "font-arabic" : ""}`}>{getTranslation(locale, "pack.contents")}</h3>
-          <div className="space-y-2">
-            {packItems.map((item) => (
+          <div className="space-y-3">
+            {packItems.map((item) => {
+              const itemDescription =
+                item.description ||
+                getLocalizedField(item.product as unknown as Record<string, unknown>, "description", locale);
+
+              return (
               <Link
                 key={item.id}
                 href={`/produit/${item.product?.slug}`}
-                className="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/40 hover:border-primary/30 transition-colors group"
+                className="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/40 bg-background hover:border-primary/30 hover:bg-primary/5 transition-colors group"
               >
-                <div className="relative w-12 h-12 rounded-md overflow-hidden bg-surface-container-low flex-shrink-0">
+                <div className="relative w-16 h-16 rounded-md overflow-hidden bg-surface-container-low flex-shrink-0">
                   {item.product?.images?.[0] ? (
                     <Image
                       src={getImageUrl(item.product.images[0])}
                       alt={item.product.nom}
                       fill
                       className="object-cover"
-                      sizes="56px"
+                      sizes="72px"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-outline-variant">
@@ -113,18 +119,24 @@ export function PackDetail({ pack }: PackDetailProps) {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-on-background text-sm font-medium truncate group-hover:text-primary transition-colors ${ar ? "font-arabic" : ""}`}>
+                  <p className={`text-on-background text-sm font-medium group-hover:text-primary transition-colors ${ar ? "font-arabic" : ""}`}>
                     {getLocalizedField(item.product as unknown as Record<string, unknown>, "nom", locale)}
                   </p>
-                  <p className={`text-secondary text-xs ${ar ? "font-arabic" : ""}`}>
+                  {itemDescription && (
+                    <p className={`text-secondary text-xs leading-relaxed mt-1 line-clamp-2 ${ar ? "font-arabic" : ""}`}>
+                      {itemDescription}
+                    </p>
+                  )}
+                  <p className={`text-secondary text-xs mt-1.5 ${ar ? "font-arabic" : ""}`}>
                     {getTranslation(locale, "pack.qty")}: {item.quantite} × {formatPrice(item.product?.prix || 0)}
                   </p>
                 </div>
-                <span className="text-primary text-sm font-medium">
+                <span className="text-primary text-sm font-medium whitespace-nowrap">
                   {formatPrice((item.product?.prix || 0) * item.quantite)}
                 </span>
               </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
 

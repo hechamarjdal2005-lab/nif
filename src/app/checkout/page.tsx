@@ -18,10 +18,17 @@ import { ShoppingBag, Tag, CheckCircle } from "lucide-react";
 type CheckoutFormData = {
   nom: string;
   tel: string;
-  email: string;
   adresse: string;
-  ville: string;
 }
+
+type PromoResult = {
+  reduction: number;
+  total_after: number;
+  message: string;
+  promo_code_id: string;
+};
+
+const PHONE_PATTERN = /^[+0-9\s().-]{8,20}$/;
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -29,11 +36,7 @@ export default function CheckoutPage() {
   const { locale } = useLanguage();
   const isAr = locale === "ar";
   const [promoCode, setPromoCode] = useState("");
-  const [promoResult, setPromoResult] = useState<{
-    reduction: number;
-    total_after: number;
-    message: string;
-  } | null>(null);
+  const [promoResult, setPromoResult] = useState<PromoResult | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -96,11 +99,11 @@ export default function CheckoutPage() {
           id: orderId,
           client_nom: formData.nom,
           client_tel: formData.tel,
-          client_email: formData.email || null,
+          client_email: null,
           client_adresse: formData.adresse,
-          client_ville: formData.ville,
+          client_ville: null,
           total,
-          promo_code_id: promoResult ? null : null,
+          promo_code_id: promoResult?.promo_code_id ?? null,
           statut: "en_attente",
         });
 
@@ -186,27 +189,30 @@ export default function CheckoutPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Input placeholder={getTranslation(locale, "checkout.name")} {...register("nom")} className="bg-surface-container-low" />
+                <Input
+                  placeholder={getTranslation(locale, "checkout.name")}
+                  {...register("nom", { required: true })}
+                  className="bg-surface-container-low"
+                />
                 {errors.nom && <p className="text-red-500 text-xs mt-1">{getTranslation(locale, "checkout.nameReq")}</p>}
               </div>
               <div>
-                <Input placeholder={getTranslation(locale, "checkout.phone")} {...register("tel")} className="bg-surface-container-low" />
+                <Input
+                  placeholder={getTranslation(locale, "checkout.phone")}
+                  {...register("tel", { required: true, pattern: PHONE_PATTERN })}
+                  className="bg-surface-container-low"
+                />
                 {errors.tel && <p className="text-red-500 text-xs mt-1">{getTranslation(locale, "checkout.phoneReq")}</p>}
               </div>
             </div>
 
             <div>
-              <Input type="email" placeholder={getTranslation(locale, "checkout.email")} {...register("email")} className="bg-surface-container-low" />
-            </div>
-
-            <div>
-              <Input placeholder={getTranslation(locale, "checkout.address")} {...register("adresse")} className="bg-surface-container-low" />
+              <Input
+                placeholder={getTranslation(locale, "checkout.address")}
+                {...register("adresse", { required: true })}
+                className="bg-surface-container-low"
+              />
               {errors.adresse && <p className="text-red-500 text-xs mt-1">{getTranslation(locale, "checkout.addressReq")}</p>}
-            </div>
-
-            <div>
-              <Input placeholder={getTranslation(locale, "checkout.city")} {...register("ville")} className="bg-surface-container-low" />
-              {errors.ville && <p className="text-red-500 text-xs mt-1">{getTranslation(locale, "checkout.cityReq")}</p>}
             </div>
 
             {/* Promo Code */}
