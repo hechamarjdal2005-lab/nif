@@ -49,18 +49,18 @@ export function Testimonials() {
 
   return (
     <section id="temoignages" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
-      <div className="text-center mb-10">
-        <h2 className={`font-heading text-on-background text-3xl sm:text-4xl mb-3 ${ar ? "font-arabic" : ""}`}>{getTranslation(locale, "testimonials.title")}</h2>
-        <p className={`text-secondary text-base max-w-xl mx-auto ${ar ? "font-arabic" : ""}`}>
+      <div className="text-center mb-8 sm:mb-10">
+        <h2 className={`font-heading text-on-background text-2xl sm:text-4xl mb-2.5 sm:mb-3 ${ar ? "font-arabic section-heading-slide-rtl" : "section-heading-slide"}`}>{getTranslation(locale, "testimonials.title")}</h2>
+        <p className={`text-secondary text-sm sm:text-base max-w-xl mx-auto ${ar ? "font-arabic" : ""}`}>
           {getTranslation(locale, "testimonials.subtitle")}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {testimonials.map((t) => (
           <div
             key={t.id}
-            className="bg-background border border-outline-variant/40 rounded-xl p-6 hover:border-primary/20 transition-all duration-300"
+            className="bg-background border border-outline-variant/40 rounded-lg sm:rounded-xl p-4 sm:p-6 hover:border-primary/20 transition-all duration-300"
           >
             <StarRating rating={t.rating} size="sm" className="mb-4" />
             <p className={`text-secondary text-sm leading-relaxed mb-4 italic ${ar ? "font-arabic" : ""}`}>

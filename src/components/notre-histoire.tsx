@@ -54,13 +54,13 @@ export function NotreHistoire() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         {/* Text */}
         <div>
-          <p className={`text-primary text-xs uppercase tracking-[0.2em] mb-3 font-medium ${isAr ? "font-arabic" : ""}`}>
+          <p className={`text-primary text-[10px] sm:text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] mb-2.5 sm:mb-3 font-medium ${isAr ? "font-arabic tracking-normal" : ""}`}>
             {getLocalizedField(content, "section_label", locale) || getTranslation(locale, "notreHistoire.label")}
           </p>
-          <h2 className={`font-heading text-on-background text-3xl sm:text-4xl leading-tight font-medium mb-4 ${isAr ? "font-arabic" : ""}`}>
+          <h2 className={`font-heading text-on-background text-2xl sm:text-4xl leading-tight font-medium mb-3 sm:mb-4 ${isAr ? "font-arabic section-side-reveal-rtl" : "section-side-reveal"}`}>
             {getLocalizedField(content, "title", locale) || getTranslation(locale, "notreHistoire.title")}
           </h2>
-          <div className={`space-y-3 text-secondary text-base leading-relaxed ${isAr ? "font-arabic" : ""}`}>
+          <div className={`space-y-2.5 sm:space-y-3 text-secondary text-sm sm:text-base leading-relaxed ${isAr ? "font-arabic" : ""}`}>
             {paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}

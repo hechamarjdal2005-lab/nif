@@ -19,21 +19,15 @@ import type { Product } from "@/lib/types";
 
 export default function HomePage() {
   const { locale } = useLanguage();
-  const [bestsellers, setBestsellers] = useState<Product[]>([]);
   const [newProducts, setNewProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     async function fetchProducts() {
       try {
         const supabase = createClient();
-        const [bs, np] = await Promise.all([
-          supabase.from("products").select("*").eq("is_bestseller", true).limit(4),
-          supabase.from("products").select("*").eq("is_new", true).limit(4),
-        ]);
-        setBestsellers((bs.data || []) as unknown as Product[]);
-        setNewProducts((np.data || []) as unknown as Product[]);
+        const { data } = await supabase.from("products").select("*").eq("is_new", true).limit(4);
+        setNewProducts((data || []) as unknown as Product[]);
       } catch {
-        setBestsellers([]);
         setNewProducts([]);
       }
     }
@@ -48,27 +42,6 @@ export default function HomePage() {
       <Hero />
       <NotreHistoire />
 
-      {/* Best Sellers */}
-      {bestsellers.length > 0 && (
-        <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className={cn("font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium", isAr && "font-arabic")}>Best Sellers</h2>
-            <p className={cn("text-secondary max-w-xl mx-auto", isAr && "font-arabic")}>
-              {getTranslation(locale, "home.bestSellersSubtitle")}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {bestsellers.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      <PacksSection />
-
-      <FeaturedCategories />
-
       {/* Nouveautés */}
       {newProducts.length > 0 && (
         <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
@@ -80,13 +53,17 @@ export default function HomePage() {
               {getTranslation(locale, "home.newArrivalsSubtitle")}
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {newProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </section>
       )}
+
+      <PacksSection />
+
+      <FeaturedCategories />
 
       <WhyChooseUs />
       <Testimonials />

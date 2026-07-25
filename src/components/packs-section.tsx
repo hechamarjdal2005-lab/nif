@@ -68,12 +68,12 @@ export function PacksSection() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-5">
         {packs.map((pack) => {
           const itemCount = pack.pack_items?.length || 0;
           return (
-            <Link key={pack.id} href={`/pack/${pack.slug}`}>
-              <div className="group relative bg-background border border-outline-variant/40 rounded-xl overflow-hidden hover-lift">
+            <Link key={pack.id} href={`/pack/${pack.slug}`} className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-15px)] max-w-[210px] sm:max-w-none">
+              <div className="group relative bg-background border border-outline-variant/40 rounded-lg sm:rounded-xl overflow-hidden hover-lift">
                 {/* Image */}
                 <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low">
                   {pack.images?.[0] ? (
@@ -91,25 +91,25 @@ export function PacksSection() {
                   )}
 
                   {/* Pack badge */}
-                  <div className="absolute top-3 left-3">
-                    <span className="inline-block bg-primary/90 text-on-primary text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
+                    <span className="inline-block bg-primary/90 text-on-primary text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
                       {getTranslation(locale, "pack.coffret")}
                     </span>
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-3">
-                  <h3 className={cn("font-heading text-base text-on-background group-hover:text-primary transition-colors mb-1 line-clamp-1", isAr && "font-arabic")}>
+                <div className="p-2.5 sm:p-3">
+                  <h3 className={cn("font-heading text-sm sm:text-base text-on-background group-hover:text-primary transition-colors mb-1 line-clamp-1", isAr && "font-arabic")}>
                     {getLocalizedField(pack as unknown as Record<string, unknown>, "nom", locale)}
                   </h3>
 
-                  <p className={cn("text-xs text-secondary mb-3", isAr && "font-arabic")}>
+                  <p className={cn("text-[10px] sm:text-xs text-secondary mb-2 sm:mb-3", isAr && "font-arabic")}>
                     {getTranslation(locale, "home.containsProducts").replace("{count}", String(itemCount))}
                   </p>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-primary font-semibold">{formatPrice(pack.prix)}</span>
+                    <span className="text-xs sm:text-sm text-primary font-semibold">{formatPrice(pack.prix)}</span>
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -117,7 +117,7 @@ export function PacksSection() {
                       }}
                       className="p-1.5 bg-primary/10 text-primary rounded-md hover:bg-primary hover:text-on-primary transition-all duration-300"
                     >
-                      <ShoppingBag className="w-3.5 h-3.5" />
+                      <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </button>
                   </div>
                 </div>

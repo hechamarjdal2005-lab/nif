@@ -25,7 +25,7 @@ export function FeaturedCategories() {
     {
       title: getTranslation(locale, "featuredCategories.cadeaux.title"),
       description: getTranslation(locale, "featuredCategories.cadeaux.desc"),
-      href: "/collection?category=cadeaux",
+      href: "/collection/cadeaux",
       gradient: "from-primary/8 to-transparent",
     },
     {
@@ -39,15 +39,15 @@ export function FeaturedCategories() {
   return (
     <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
       <div className="text-center mb-10">
-        <h2 className={`font-heading text-on-background text-3xl sm:text-4xl leading-tight font-medium mb-3 ${isAr ? "font-arabic" : ""}`}>
+        <h2 className={`font-heading text-on-background text-2xl sm:text-4xl leading-tight font-medium mb-2.5 sm:mb-3 ${isAr ? "font-arabic section-heading-slide-rtl" : "section-heading-slide"}`}>
           {getTranslation(locale, "featuredCategories.sectionTitle")}
         </h2>
-        <p className={`text-secondary text-base max-w-xl mx-auto ${isAr ? "font-arabic" : ""}`}>
+        <p className={`text-secondary text-sm sm:text-base max-w-xl mx-auto ${isAr ? "font-arabic" : ""}`}>
           {getTranslation(locale, "featuredCategories.sectionSubtitle")}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {categories.map((cat) => (
           <Link key={cat.title} href={cat.href}>
             <div className="group relative h-52 rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 hover:border-primary/30 transition-all duration-500">

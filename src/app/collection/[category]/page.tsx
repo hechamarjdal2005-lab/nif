@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { use } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
@@ -13,6 +12,7 @@ import { cn } from "@/lib/utils";
 import type { Product, Category } from "@/lib/types";
 
 const VALID_CATEGORIES = ["homme", "femme", "packs", "cadeaux", "nouveautes", "best-sellers"];
+const FILTER_CATEGORIES = ["homme", "femme", "packs", "cadeaux"];
 
 const CATEGORY_TITLES: Record<string, { fr: string; ar: string }> = {
   homme: { fr: "Collection Homme", ar: "مجموعة رجال" },
@@ -26,9 +26,9 @@ const CATEGORY_TITLES: Record<string, { fr: string; ar: string }> = {
 export default function CategoryPage({
   params,
 }: {
-  params: Promise<{ category: string }>;
+  params: { category: string };
 }) {
-  const { category } = use(params);
+  const { category } = params;
   const { locale } = useLanguage();
   const isAr = locale === "ar";
 
@@ -44,15 +44,6 @@ export default function CategoryPage({
         let query = supabase.from("products").select("*");
 
         switch (category) {
-          case "homme":
-            query = query.eq("genre", "homme");
-            break;
-          case "femme":
-            query = query.eq("genre", "femme");
-            break;
-          case "packs":
-            query = query.eq("type", "pack");
-            break;
           case "best-sellers":
             query = query.eq("is_bestseller", true);
             break;
@@ -92,8 +83,8 @@ export default function CategoryPage({
         <CollectionContent
           products={products}
           categories={categories}
-          initialGenre={["homme", "femme"].includes(category) ? category : undefined}
-          showGenreFilter={!["homme", "femme"].includes(category)}
+          initialCategory={FILTER_CATEGORIES.includes(category) ? category : undefined}
+          showGenreFilter={false}
         />
       </div>
       <Footer />

@@ -52,28 +52,28 @@ export function WhyChooseUs() {
   return (
     <section className="py-16 px-4 sm:px-6 bg-background">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className={`font-heading text-on-background text-3xl sm:text-4xl leading-tight font-medium mb-3 ${isAr ? "font-arabic" : ""}`}>
+        <div className="text-center mb-8 sm:mb-10">
+          <h2 className={`font-heading text-on-background text-2xl sm:text-4xl leading-tight font-medium mb-2.5 sm:mb-3 ${isAr ? "font-arabic section-heading-slide-rtl" : "section-heading-slide"}`}>
             {getLocalizedField(content, "title", locale) || getTranslation(locale, "whyChooseUs.title")}
           </h2>
-          <p className={`text-secondary text-base max-w-xl mx-auto ${isAr ? "font-arabic" : ""}`}>
+          <p className={`text-secondary text-sm sm:text-base max-w-xl mx-auto ${isAr ? "font-arabic" : ""}`}>
             {getLocalizedField(content, "subtitle", locale) || getTranslation(locale, "whyChooseUs.subtitle")}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {cards.map((feature, i) => {
             const Icon = ICONS[i] || Shield;
             return (
               <div
                 key={feature.title}
-                className="text-center bg-background border border-outline-variant/40 rounded-xl p-6 hover:border-primary/20 transition-all duration-300 hover-lift"
+                className="text-center bg-background border border-outline-variant/40 rounded-lg sm:rounded-xl p-3 sm:p-6 hover:border-primary/20 transition-all duration-300 hover-lift"
               >
-                <div className="w-11 h-11 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-primary" />
+                <div className="w-9 h-9 sm:w-11 sm:h-11 mx-auto mb-2 sm:mb-3 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 </div>
-                <h3 className={`font-heading text-on-background text-base mb-2 ${isAr ? "font-arabic" : ""}`}>{feature.title}</h3>
-                <p className={`text-sm text-secondary leading-relaxed ${isAr ? "font-arabic" : ""}`}>{feature.description}</p>
+                <h3 className={`font-heading text-on-background text-sm sm:text-base mb-1.5 sm:mb-2 ${isAr ? "font-arabic" : ""}`}>{feature.title}</h3>
+                <p className={`text-xs sm:text-sm text-secondary leading-relaxed ${isAr ? "font-arabic" : ""}`}>{feature.description}</p>
               </div>
             );
           })}

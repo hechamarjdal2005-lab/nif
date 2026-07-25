@@ -16,6 +16,7 @@ interface CollectionContentProps {
   products: Product[];
   categories: Category[];
   initialGenre?: string;
+  initialCategory?: string;
   showGenreFilter?: boolean;
   title?: string;
 }
@@ -27,11 +28,12 @@ export function CollectionContent({
   products,
   categories,
   initialGenre,
+  initialCategory,
   showGenreFilter = true,
 }: CollectionContentProps) {
   const [search, setSearch] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<string>(initialGenre || "all");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || "all");
   const [currentPage, setCurrentPage] = useState(1);
   const { locale } = useLanguage();
   const ar = locale === "ar";
@@ -164,7 +166,7 @@ export function CollectionContent({
 
       {/* Products Grid */}
       {paginatedProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {paginatedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
