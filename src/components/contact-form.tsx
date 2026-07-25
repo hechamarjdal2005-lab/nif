@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation, getLocalizedField } from "@/lib/i18n";
 
 type ContactFormData = {
   nom: string;
@@ -41,6 +43,9 @@ function SocialIcon({ platform }: { platform: SocialPlatform }) {
 }
 
 export function ContactForm() {
+  const { locale } = useLanguage();
+  const ar = locale === "ar";
+  const t = (key: string) => getTranslation(locale, key);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,7 +90,7 @@ export function ContactForm() {
       reset();
       setTimeout(() => setIsSubmitted(false), 5000);
     } catch {
-      setError("Une erreur est survenue. Veuillez reessayer.");
+      setError(t("contact.error"));
     } finally {
       setIsSubmitting(false);
     }
@@ -95,9 +100,9 @@ export function ContactForm() {
     <section id="contact" className="px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 text-center">
-          <h2 className="font-heading mb-3 text-3xl text-on-background">Contactez-Nous</h2>
-          <p className="text-secondary">
-            Une question ? Un besoin special ? Nous sommes a votre ecoute.
+          <h2 className={`font-heading mb-3 text-3xl text-on-background ${ar ? "font-arabic" : ""}`}>{t("contact.title")}</h2>
+          <p className={`text-secondary ${ar ? "font-arabic" : ""}`}>
+            {t("contact.subtitle")}
           </p>
         </div>
 
@@ -106,36 +111,36 @@ export function ContactForm() {
             {isSubmitted ? (
               <div className="py-8 text-center">
                 <CheckCircle className="mx-auto mb-3 h-12 w-12 text-primary" />
-                <h3 className="font-heading mb-2 text-xl text-on-background">Message Envoye !</h3>
-                <p className="text-secondary">Nous vous repondrons dans les plus brefs delais.</p>
+                <h3 className={`font-heading mb-2 text-xl text-on-background ${ar ? "font-arabic" : ""}`}>{t("contact.successTitle")}</h3>
+                <p className={`text-secondary ${ar ? "font-arabic" : ""}`}>{t("contact.successBody")}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
-                  <Input placeholder="Votre nom" {...register("nom")} className="bg-surface-container-low" />
+                  <Input placeholder={t("contact.namePlaceholder")} {...register("nom")} className={`bg-surface-container-low ${ar ? "font-arabic" : ""}`} />
                   {errors.nom && <p className="mt-1 text-xs text-red-400">{errors.nom.message}</p>}
                 </div>
                 <div>
-                  <Input type="email" placeholder="Votre email" {...register("email")} className="bg-surface-container-low" />
+                  <Input type="email" placeholder={t("contact.emailPlaceholder")} {...register("email")} className={`bg-surface-container-low ${ar ? "font-arabic" : ""}`} />
                   {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email.message}</p>}
                 </div>
                 <div>
-                  <Textarea placeholder="Votre message..." rows={5} {...register("message")} className="bg-surface-container-low" />
+                  <Textarea placeholder={t("contact.messagePlaceholder")} rows={5} {...register("message")} className={`bg-surface-container-low ${ar ? "font-arabic" : ""}`} />
                   {errors.message && <p className="mt-1 text-xs text-red-400">{errors.message.message}</p>}
                 </div>
                 {error && <p className="text-sm text-red-400">{error}</p>}
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   <Send className="mr-2 h-4 w-4" />
-                  {isSubmitting ? "Envoi..." : "Envoyer le Message"}
+                  {isSubmitting ? t("contact.sending") : t("contact.send")}
                 </Button>
               </form>
             )}
           </div>
 
           <div className="rounded-xl border border-outline-variant/40 bg-background p-6">
-            <h3 className="font-heading mb-2 text-xl text-on-background">Reseaux sociaux</h3>
-            <p className="mb-5 text-sm text-secondary">
-              Contactez-nous directement sur votre canal prefere.
+            <h3 className={`font-heading mb-2 text-xl text-on-background ${ar ? "font-arabic" : ""}`}>{t("contact.socialsTitle")}</h3>
+            <p className={`mb-5 text-sm text-secondary ${ar ? "font-arabic" : ""}`}>
+              {t("contact.socialsSubtitle")}
             </p>
 
             <div className="space-y-3">
@@ -151,7 +156,7 @@ export function ContactForm() {
                     <SocialIcon platform={link.platform} />
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-sm font-medium text-on-background">{link.label}</span>
+                    <span className={`block text-sm font-medium text-on-background ${ar ? "font-arabic" : ""}`}>{getLocalizedField(link as unknown as Record<string, unknown>, "label", locale)}</span>
                     <span className="block truncate text-xs text-secondary">{link.value}</span>
                   </span>
                 </a>

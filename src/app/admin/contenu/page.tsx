@@ -131,24 +131,40 @@ export default function AdminContenuPage() {
 
   // Hero state
   const [heroSubtitle, setHeroSubtitle] = useState("");
+  const [heroSubtitleAr, setHeroSubtitleAr] = useState("");
   const [heroTitle, setHeroTitle] = useState("");
+  const [heroTitleAr, setHeroTitleAr] = useState("");
   const [heroDesc, setHeroDesc] = useState("");
+  const [heroDescAr, setHeroDescAr] = useState("");
   const [heroBtnPrimary, setHeroBtnPrimary] = useState("");
+  const [heroBtnPrimaryAr, setHeroBtnPrimaryAr] = useState("");
   const [heroBtnPrimaryLink, setHeroBtnPrimaryLink] = useState("");
   const [heroBtnSecondary, setHeroBtnSecondary] = useState("");
+  const [heroBtnSecondaryAr, setHeroBtnSecondaryAr] = useState("");
   const [heroBtnSecondaryLink, setHeroBtnSecondaryLink] = useState("");
   const [heroBgUrl, setHeroBgUrl] = useState("");
 
   // Notre Histoire state
   const [nhLabel, setNhLabel] = useState("");
+  const [nhLabelAr, setNhLabelAr] = useState("");
   const [nhTitle, setNhTitle] = useState("");
+  const [nhTitleAr, setNhTitleAr] = useState("");
   const [nhParagraphs, setNhParagraphs] = useState(["", "", ""]);
+  const [nhParagraphsAr, setNhParagraphsAr] = useState(["", "", ""]);
   const [nhImages, setNhImages] = useState(["", "", "", ""]);
 
   // Pourquoi Nous Choisir state
   const [wnTitle, setWnTitle] = useState("");
+  const [wnTitleAr, setWnTitleAr] = useState("");
   const [wnSubtitle, setWnSubtitle] = useState("");
+  const [wnSubtitleAr, setWnSubtitleAr] = useState("");
   const [wnCards, setWnCards] = useState<Array<{ title: string; description: string }>>([
+    { title: "", description: "" },
+    { title: "", description: "" },
+    { title: "", description: "" },
+    { title: "", description: "" },
+  ]);
+  const [wnCardsAr, setWnCardsAr] = useState<Array<{ title: string; description: string }>>([
     { title: "", description: "" },
     { title: "", description: "" },
     { title: "", description: "" },
@@ -180,24 +196,35 @@ export default function AdminContenuPage() {
         switch (row.section) {
           case "hero":
             setHeroSubtitle(c.subtitle || "");
+            setHeroSubtitleAr(c.subtitle_ar || "");
             setHeroTitle(c.title || "");
+            setHeroTitleAr(c.title_ar || "");
             setHeroDesc(c.description || "");
+            setHeroDescAr(c.description_ar || "");
             setHeroBtnPrimary(c.button_primary_text || "");
+            setHeroBtnPrimaryAr(c.button_primary_text_ar || "");
             setHeroBtnPrimaryLink(c.button_primary_link || "");
             setHeroBtnSecondary(c.button_secondary_text || "");
+            setHeroBtnSecondaryAr(c.button_secondary_text_ar || "");
             setHeroBtnSecondaryLink(c.button_secondary_link || "");
             setHeroBgUrl(c.background_image_url || "");
             break;
           case "notre_histoire":
             setNhLabel(c.section_label || "");
+            setNhLabelAr(c.section_label_ar || "");
             setNhTitle(c.title || "");
+            setNhTitleAr(c.title_ar || "");
             setNhParagraphs(c.paragraphs || ["", "", ""]);
+            setNhParagraphsAr(c.paragraphs_ar || ["", "", ""]);
             setNhImages(c.images || ["", "", "", ""]);
             break;
           case "pourquoi_nous_choisir":
             setWnTitle(c.title || "");
+            setWnTitleAr(c.title_ar || "");
             setWnSubtitle(c.subtitle || "");
+            setWnSubtitleAr(c.subtitle_ar || "");
             if (c.cards?.length) setWnCards(c.cards);
+            if (c.cards_ar?.length) setWnCardsAr(c.cards_ar);
             break;
           case "site_settings":
             setLogoUrl(c.logo_url || "");
@@ -288,11 +315,16 @@ export default function AdminContenuPage() {
       const { error } = await supabase.from("site_content").update({
         content: {
           subtitle: heroSubtitle,
+          subtitle_ar: heroSubtitleAr,
           title: heroTitle,
+          title_ar: heroTitleAr,
           description: heroDesc,
+          description_ar: heroDescAr,
           button_primary_text: heroBtnPrimary,
+          button_primary_text_ar: heroBtnPrimaryAr,
           button_primary_link: heroBtnPrimaryLink,
           button_secondary_text: heroBtnSecondary,
+          button_secondary_text_ar: heroBtnSecondaryAr,
           button_secondary_link: heroBtnSecondaryLink,
           background_image_url: bgUrl,
         },
@@ -319,8 +351,11 @@ export default function AdminContenuPage() {
       const { error } = await supabase.from("site_content").update({
         content: {
           section_label: nhLabel,
+          section_label_ar: nhLabelAr,
           title: nhTitle,
+          title_ar: nhTitleAr,
           paragraphs: nhParagraphs,
+          paragraphs_ar: nhParagraphsAr,
           images,
         },
       }).eq("section", "notre_histoire");
@@ -341,8 +376,11 @@ export default function AdminContenuPage() {
       const { error } = await supabase.from("site_content").update({
         content: {
           title: wnTitle,
+          title_ar: wnTitleAr,
           subtitle: wnSubtitle,
+          subtitle_ar: wnSubtitleAr,
           cards: wnCards,
+          cards_ar: wnCardsAr,
         },
       }).eq("section", "pourquoi_nous_choisir");
       if (error) throw error;
@@ -410,12 +448,24 @@ export default function AdminContenuPage() {
           <Input value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} className="bg-dark" />
         </div>
         <div>
+          <label className="block text-sm text-dark-500 mb-1">Sous-titre (AR) <span className="text-dark-400">العربية</span></label>
+          <Input value={heroSubtitleAr} onChange={(e) => setHeroSubtitleAr(e.target.value)} className="bg-dark" dir="rtl" />
+        </div>
+        <div>
           <label className="block text-sm text-dark-500 mb-1">Titre</label>
           <Input value={heroTitle} onChange={(e) => setHeroTitle(e.target.value)} className="bg-dark" />
         </div>
         <div>
+          <label className="block text-sm text-dark-500 mb-1">Titre (AR) <span className="text-dark-400">العربية</span></label>
+          <Input value={heroTitleAr} onChange={(e) => setHeroTitleAr(e.target.value)} className="bg-dark" dir="rtl" />
+        </div>
+        <div>
           <label className="block text-sm text-dark-500 mb-1">Description</label>
           <Textarea value={heroDesc} onChange={(e) => setHeroDesc(e.target.value)} rows={3} className="bg-dark" />
+        </div>
+        <div>
+          <label className="block text-sm text-dark-500 mb-1">Description (AR) <span className="text-dark-400">العربية</span></label>
+          <Textarea value={heroDescAr} onChange={(e) => setHeroDescAr(e.target.value)} rows={3} className="bg-dark" dir="rtl" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -424,9 +474,16 @@ export default function AdminContenuPage() {
             <Input value={heroBtnPrimary} onChange={(e) => setHeroBtnPrimary(e.target.value)} className="bg-dark" />
           </div>
           <div>
+            <label className="block text-sm text-dark-500 mb-1">Texte bouton principal (AR) <span className="text-dark-400">العربية</span></label>
+            <Input value={heroBtnPrimaryAr} onChange={(e) => setHeroBtnPrimaryAr(e.target.value)} className="bg-dark" dir="rtl" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
             <label className="block text-sm text-dark-500 mb-1">Lien bouton principal</label>
             <Input value={heroBtnPrimaryLink} onChange={(e) => setHeroBtnPrimaryLink(e.target.value)} className="bg-dark" />
           </div>
+          <div />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -434,9 +491,16 @@ export default function AdminContenuPage() {
             <Input value={heroBtnSecondary} onChange={(e) => setHeroBtnSecondary(e.target.value)} className="bg-dark" />
           </div>
           <div>
+            <label className="block text-sm text-dark-500 mb-1">Texte bouton secondaire (AR) <span className="text-dark-400">العربية</span></label>
+            <Input value={heroBtnSecondaryAr} onChange={(e) => setHeroBtnSecondaryAr(e.target.value)} className="bg-dark" dir="rtl" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
             <label className="block text-sm text-dark-500 mb-1">Lien bouton secondaire</label>
             <Input value={heroBtnSecondaryLink} onChange={(e) => setHeroBtnSecondaryLink(e.target.value)} className="bg-dark" />
           </div>
+          <div />
         </div>
 
         <Button onClick={saveHero} disabled={saving === "hero"} className="mt-2">
@@ -454,23 +518,47 @@ export default function AdminContenuPage() {
           <Input value={nhLabel} onChange={(e) => setNhLabel(e.target.value)} className="bg-dark" />
         </div>
         <div>
+          <label className="block text-sm text-dark-500 mb-1">Label (AR) <span className="text-dark-400">العربية</span></label>
+          <Input value={nhLabelAr} onChange={(e) => setNhLabelAr(e.target.value)} className="bg-dark" dir="rtl" />
+        </div>
+        <div>
           <label className="block text-sm text-dark-500 mb-1">Titre</label>
           <Input value={nhTitle} onChange={(e) => setNhTitle(e.target.value)} className="bg-dark" />
         </div>
+        <div>
+          <label className="block text-sm text-dark-500 mb-1">Titre (AR) <span className="text-dark-400">العربية</span></label>
+          <Input value={nhTitleAr} onChange={(e) => setNhTitleAr(e.target.value)} className="bg-dark" dir="rtl" />
+        </div>
 
         {nhParagraphs.map((p, i) => (
-          <div key={i}>
-            <label className="block text-sm text-dark-500 mb-1">Paragraphe {i + 1}</label>
-            <Textarea
-              value={p}
-              onChange={(e) => {
-                const next = [...nhParagraphs];
-                next[i] = e.target.value;
-                setNhParagraphs(next);
-              }}
-              rows={3}
-              className="bg-dark"
-            />
+          <div key={i} className="space-y-2">
+            <div>
+              <label className="block text-sm text-dark-500 mb-1">Paragraphe {i + 1}</label>
+              <Textarea
+                value={p}
+                onChange={(e) => {
+                  const next = [...nhParagraphs];
+                  next[i] = e.target.value;
+                  setNhParagraphs(next);
+                }}
+                rows={3}
+                className="bg-dark"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-dark-500 mb-1">Paragraphe {i + 1} (AR) <span className="text-dark-400">العربية</span></label>
+              <Textarea
+                value={nhParagraphsAr[i] || ""}
+                onChange={(e) => {
+                  const next = [...nhParagraphsAr];
+                  next[i] = e.target.value;
+                  setNhParagraphsAr(next);
+                }}
+                rows={3}
+                className="bg-dark"
+                dir="rtl"
+              />
+            </div>
           </div>
         ))}
 
@@ -506,8 +594,16 @@ export default function AdminContenuPage() {
           <Input value={wnTitle} onChange={(e) => setWnTitle(e.target.value)} className="bg-dark" />
         </div>
         <div>
+          <label className="block text-sm text-dark-500 mb-1">Titre (AR) <span className="text-dark-400">العربية</span></label>
+          <Input value={wnTitleAr} onChange={(e) => setWnTitleAr(e.target.value)} className="bg-dark" dir="rtl" />
+        </div>
+        <div>
           <label className="block text-sm text-dark-500 mb-1">Sous-titre</label>
           <Input value={wnSubtitle} onChange={(e) => setWnSubtitle(e.target.value)} className="bg-dark" />
+        </div>
+        <div>
+          <label className="block text-sm text-dark-500 mb-1">Sous-titre (AR) <span className="text-dark-400">العربية</span></label>
+          <Input value={wnSubtitleAr} onChange={(e) => setWnSubtitleAr(e.target.value)} className="bg-dark" dir="rtl" />
         </div>
 
         <div className="space-y-4">
@@ -528,6 +624,19 @@ export default function AdminContenuPage() {
                 />
               </div>
               <div>
+                <label className="block text-sm text-dark-500 mb-1">Titre (AR) <span className="text-dark-400">العربية</span></label>
+                <Input
+                  value={wnCardsAr[i]?.title || ""}
+                  onChange={(e) => {
+                    const next = [...wnCardsAr];
+                    next[i] = { ...next[i], title: e.target.value };
+                    setWnCardsAr(next);
+                  }}
+                  className="bg-dark"
+                  dir="rtl"
+                />
+              </div>
+              <div>
                 <label className="block text-sm text-dark-500 mb-1">Description</label>
                 <Textarea
                   value={card.description}
@@ -538,6 +647,20 @@ export default function AdminContenuPage() {
                   }}
                   rows={2}
                   className="bg-dark"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-dark-500 mb-1">Description (AR) <span className="text-dark-400">العربية</span></label>
+                <Textarea
+                  value={wnCardsAr[i]?.description || ""}
+                  onChange={(e) => {
+                    const next = [...wnCardsAr];
+                    next[i] = { ...next[i], description: e.target.value };
+                    setWnCardsAr(next);
+                  }}
+                  rows={2}
+                  className="bg-dark"
+                  dir="rtl"
                 />
               </div>
             </div>

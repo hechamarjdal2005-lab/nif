@@ -1,41 +1,46 @@
-import { createClient } from "@/lib/supabase/server";
+"use client";
+
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { NotreHistoire } from "@/components/notre-histoire";
 import { FeaturedCategories } from "@/components/featured-categories";
 import { ProductCard } from "@/components/product-card";
+import { PacksSection } from "@/components/packs-section";
 import { WhyChooseUs } from "@/components/why-choose-us";
 import { Testimonials } from "@/components/testimonials";
 import { ContactForm } from "@/components/contact-form";
 import { Footer } from "@/components/footer";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
-async function getFeaturedProducts(): Promise<{ bestsellers: Product[]; newProducts: Product[] }> {
-  try {
-    const supabase = await createClient();
-    const [bestsellers, newProducts] = await Promise.all([
-      supabase
-        .from("products")
-        .select("*")
-        .eq("is_bestseller", true)
-        .limit(4),
-      supabase
-        .from("products")
-        .select("*")
-        .eq("is_new", true)
-        .limit(4),
-    ]);
-    return {
-      bestsellers: (bestsellers.data || []) as unknown as Product[],
-      newProducts: (newProducts.data || []) as unknown as Product[],
-    };
-  } catch {
-    return { bestsellers: [], newProducts: [] };
-  }
-}
+export default function HomePage() {
+  const { locale } = useLanguage();
+  const [bestsellers, setBestsellers] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
 
-export default async function HomePage() {
-  const { bestsellers, newProducts } = await getFeaturedProducts();
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const supabase = createClient();
+        const [bs, np] = await Promise.all([
+          supabase.from("products").select("*").eq("is_bestseller", true).limit(4),
+          supabase.from("products").select("*").eq("is_new", true).limit(4),
+        ]);
+        setBestsellers((bs.data || []) as unknown as Product[]);
+        setNewProducts((np.data || []) as unknown as Product[]);
+      } catch {
+        setBestsellers([]);
+        setNewProducts([]);
+      }
+    }
+    fetchProducts();
+  }, []);
+
+  const isAr = locale === "ar";
 
   return (
     <main>
@@ -47,9 +52,9 @@ export default async function HomePage() {
       {bestsellers.length > 0 && (
         <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium">Best Sellers</h2>
-            <p className="text-secondary max-w-xl mx-auto">
-              Les parfums les plus plébiscités par notre clientèle
+            <h2 className={cn("font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium", isAr && "font-arabic")}>Best Sellers</h2>
+            <p className={cn("text-secondary max-w-xl mx-auto", isAr && "font-arabic")}>
+              {getTranslation(locale, "home.bestSellersSubtitle")}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -60,15 +65,19 @@ export default async function HomePage() {
         </section>
       )}
 
+      <PacksSection />
+
       <FeaturedCategories />
 
       {/* Nouveautés */}
       {newProducts.length > 0 && (
         <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium">Nouveautés</h2>
-            <p className="text-secondary max-w-xl mx-auto">
-              Découvrez nos dernières créations
+            <h2 className={cn("font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium", isAr && "font-arabic")}>
+              {getTranslation(locale, "home.newArrivals")}
+            </h2>
+            <p className={cn("text-secondary max-w-xl mx-auto", isAr && "font-arabic")}>
+              {getTranslation(locale, "home.newArrivalsSubtitle")}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

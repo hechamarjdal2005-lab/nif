@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Montserrat } from "next/font/google";
+import { Playfair_Display, Montserrat, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
+import { LanguageProvider } from "@/lib/language-context";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -12,6 +13,12 @@ const playfair = Playfair_Display({
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
+  display: "swap",
+});
+
+const notoArabic = Noto_Sans_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-noto-arabic",
   display: "swap",
 });
 
@@ -27,9 +34,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${playfair.variable} ${montserrat.variable}`}>
+    <html lang="fr" className={`${playfair.variable} ${montserrat.variable} ${notoArabic.variable}`} suppressHydrationWarning>
       <body className="font-body antialiased bg-background text-on-background min-h-screen">
-        <CartProvider>{children}</CartProvider>
+        <LanguageProvider>
+          <CartProvider>{children}</CartProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

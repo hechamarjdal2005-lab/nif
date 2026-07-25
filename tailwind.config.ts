@@ -50,6 +50,7 @@ const config: Config = {
       fontFamily: {
         heading: ["var(--font-playfair)", "serif"],
         body: ["var(--font-montserrat)", "sans-serif"],
+        arabic: ["var(--font-noto-arabic)", "sans-serif"],
       },
       animation: {
         "fade-in-up": "fadeInUp 0.6s ease-out forwards",

@@ -8,10 +8,14 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useCart } from "@/lib/cart-context";
-import { formatPrice, getImageUrl } from "@/lib/utils";
+import { formatPrice, getImageUrl, cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation } from "@/lib/i18n";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, getTotal, getItemCount, isLoading } = useCart();
+  const { locale } = useLanguage();
+  const isAr = locale === "ar";
 
   if (isLoading) {
     return (
@@ -34,13 +38,13 @@ export default function CartPage() {
     <main>
       <Navbar />
       <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <h1 className="font-heading text-on-background text-3xl sm:text-4xl mb-8 font-medium">Mon Panier</h1>
+        <h1 className={cn("font-heading text-on-background text-3xl sm:text-4xl mb-8 font-medium", isAr && "font-arabic")}>{getTranslation(locale, "cart.title")}</h1>
 
         {items.length === 0 ? (
           <EmptyState
             icon={<ShoppingBag className="w-16 h-16" />}
-            title="Votre panier est vide"
-            description="Découvrez notre collection et ajoutez vos parfums favoris."
+            title={getTranslation(locale, "cart.emptyTitle")}
+            description={getTranslation(locale, "cart.emptyDesc")}
           />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -103,25 +107,25 @@ export default function CartPage() {
             {/* Summary */}
             <div className="lg:col-span-1">
               <div className="p-6 rounded-xl border border-outline-variant/40 bg-background sticky top-24">
-                <h2 className="font-heading text-on-background text-xl mb-4">Récapitulatif</h2>
+                <h2 className={cn("font-heading text-on-background text-xl mb-4", isAr && "font-arabic")}>{getTranslation(locale, "cart.summary")}</h2>
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-secondary">Articles ({getItemCount()})</span>
+                    <span className={cn("text-secondary", isAr && "font-arabic")}>{getTranslation(locale, "cart.articles")} ({getItemCount()})</span>
                     <span className="text-on-background">{formatPrice(getTotal())}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-secondary">Livraison</span>
-                    <span className="text-primary">Gratuite</span>
+                    <span className={cn("text-secondary", isAr && "font-arabic")}>{getTranslation(locale, "cart.shipping")}</span>
+                    <span className={cn("text-primary", isAr && "font-arabic")}>{getTranslation(locale, "cart.free")}</span>
                   </div>
                   <hr className="border-outline-variant/40" />
                   <div className="flex justify-between">
-                    <span className="text-on-background font-medium">Total</span>
+                    <span className={cn("text-on-background font-medium", isAr && "font-arabic")}>{getTranslation(locale, "cart.total")}</span>
                     <span className="text-primary font-semibold text-lg">{formatPrice(getTotal())}</span>
                   </div>
                 </div>
                 <Link href="/checkout">
-                  <Button size="lg" className="w-full">
-                    Passer la commande
+                  <Button size="lg" className={cn("w-full", isAr && "font-arabic")}>
+                    {getTranslation(locale, "cart.checkout")}
                   </Button>
                 </Link>
               </div>

@@ -8,6 +8,8 @@ import { ProductCard } from "@/components/product-card";
 import { Pagination } from "@/components/ui/pagination";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation, getLocalizedField } from "@/lib/i18n";
 import type { Product, Category } from "@/lib/types";
 
 interface CollectionContentProps {
@@ -30,6 +32,8 @@ export function CollectionContent({
   const [selectedGenre, setSelectedGenre] = useState<string>(initialGenre || "all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const { locale } = useLanguage();
+  const ar = locale === "ar";
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -56,7 +60,7 @@ export function CollectionContent({
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-secondary" />
           <Input
-            placeholder="Rechercher un parfum..."
+            placeholder={getTranslation(locale, "collection.search")}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -71,10 +75,10 @@ export function CollectionContent({
       {showGenreFilter && (
         <div className="flex flex-wrap gap-2 mb-6">
           {[
-            { value: "all", label: "Tout" },
-            { value: "homme", label: "Homme" },
-            { value: "femme", label: "Femme" },
-            { value: "mixte", label: "Mixte" },
+            { value: "all", label: getTranslation(locale, "collection.all") },
+            { value: "homme", label: getTranslation(locale, "collection.homme") },
+            { value: "femme", label: getTranslation(locale, "collection.femme") },
+            { value: "mixte", label: getTranslation(locale, "collection.mixte") },
           ].map((g) => (
             <Button
               key={g.value}
@@ -107,9 +111,9 @@ export function CollectionContent({
             className={cn(
               selectedCategory !== "all" && "border-outline-variant text-secondary hover:text-primary hover:border-primary/30"
             )}
-          >
-            Toutes catégories
-          </Button>
+            >
+              {getTranslation(locale, "collection.allCategories")}
+            </Button>
           {categories.map((cat) => (
             <Button
               key={cat.id}
@@ -130,8 +134,8 @@ export function CollectionContent({
       )}
 
       {/* Results count */}
-      <p className="text-sm text-secondary mb-5">
-        {filteredProducts.length} produit{filteredProducts.length !== 1 ? "s" : ""} trouvé{filteredProducts.length !== 1 ? "s" : ""}
+      <p className={`text-sm text-secondary mb-5 ${ar ? "font-arabic" : ""}`}>
+        {getTranslation(locale, "collection.results").replace("{count}", String(filteredProducts.length))}
       </p>
 
       {/* Products Grid */}
@@ -143,8 +147,8 @@ export function CollectionContent({
         </div>
       ) : (
         <EmptyState
-          title="Aucun produit trouvé"
-          description="Essayez de modifier vos filtres de recherche."
+          title={getTranslation(locale, "collection.emptyTitle")}
+          description={getTranslation(locale, "collection.emptyDesc")}
         />
       )}
 

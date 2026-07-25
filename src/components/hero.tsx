@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SITE_NAME } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation, getLocalizedField } from "@/lib/i18n";
 
 type HeroContent = {
   subtitle: string;
@@ -28,7 +30,9 @@ const FALLBACK: HeroContent = {
 };
 
 export function Hero() {
+  const { locale } = useLanguage();
   const [content, setContent] = useState<HeroContent>(FALLBACK);
+  const isAr = locale === "ar";
 
   useEffect(() => {
     const supabase = createClient();
@@ -62,35 +66,35 @@ export function Hero() {
 
       {/* Content — left aligned */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="max-w-2xl">
+        <div className={`max-w-2xl ${isAr ? "dir-rtl" : ""}`} dir={isAr ? "rtl" : undefined}>
           {/* Tagline */}
-          <p className="hero-reveal font-body text-primary text-xs sm:text-sm uppercase tracking-[0.2em] mb-4 sm:mb-5 font-medium">
-            {content.subtitle}
+          <p className={`hero-reveal font-body text-primary text-xs sm:text-sm uppercase tracking-[0.2em] mb-4 sm:mb-5 font-medium ${isAr ? "font-arabic" : ""}`}>
+            {getLocalizedField(content, "subtitle", locale) || getTranslation(locale, "hero.subtitle")}
           </p>
 
           {/* Title */}
-          <h1 className="hero-reveal-delay-1 font-heading text-on-background text-[36px] sm:text-[44px] lg:text-[52px] leading-[1.05] tracking-[-0.02em] mb-5 sm:mb-6 font-medium">
-            {content.title}
+          <h1 className={`hero-reveal-delay-1 font-heading text-on-background text-[36px] sm:text-[44px] lg:text-[52px] leading-[1.05] tracking-[-0.02em] mb-5 sm:mb-6 font-medium ${isAr ? "font-arabic" : ""}`}>
+            {getLocalizedField(content, "title", locale)}
           </h1>
 
           {/* Description */}
-          <p className="hero-reveal-delay-2 font-body text-secondary text-base sm:text-lg leading-relaxed mb-8 sm:mb-10 max-w-lg font-normal">
-            {content.description}
+          <p className={`hero-reveal-delay-2 font-body text-secondary text-base sm:text-lg leading-relaxed mb-8 sm:mb-10 max-w-lg font-normal ${isAr ? "font-arabic" : ""}`}>
+            {getLocalizedField(content, "description", locale) || getTranslation(locale, "hero.description")}
           </p>
 
           {/* Buttons */}
           <div className="hero-reveal-delay-3 flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
             <Link
               href={content.button_primary_link}
-              className="inline-flex items-center justify-center px-8 py-3.5 bg-primary text-on-primary font-body text-sm uppercase tracking-[0.18em] font-medium rounded-none hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/10"
+              className={`inline-flex items-center justify-center px-8 py-3.5 bg-primary text-on-primary font-body text-sm uppercase tracking-[0.18em] font-medium rounded-none hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/10 ${isAr ? "font-arabic" : ""}`}
             >
-              {content.button_primary_text}
+              {getLocalizedField(content, "button_primary_text", locale) || getTranslation(locale, "hero.btnDiscover")}
             </Link>
             <Link
               href={content.button_secondary_link}
-              className="inline-flex items-center justify-center px-8 py-3.5 border border-primary text-primary font-body text-sm uppercase tracking-[0.18em] font-medium rounded-none hover:bg-primary hover:text-on-primary transition-all duration-300"
+              className={`inline-flex items-center justify-center px-8 py-3.5 border border-primary text-primary font-body text-sm uppercase tracking-[0.18em] font-medium rounded-none hover:bg-primary hover:text-on-primary transition-all duration-300 ${isAr ? "font-arabic" : ""}`}
             >
-              {content.button_secondary_text}
+              {getLocalizedField(content, "button_secondary_text", locale) || getTranslation(locale, "hero.btnCollection")}
             </Link>
           </div>
         </div>

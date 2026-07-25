@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation, getLocalizedField } from "@/lib/i18n";
 
 type HistoireContent = {
   section_label: string;
   title: string;
   paragraphs: string[];
+  paragraphs_ar?: string[];
   images: string[];
 };
 
@@ -26,7 +29,9 @@ const PLACEHOLDER_SIZES = ["text-5xl", "text-3xl", "text-3xl", "text-5xl"];
 const ASPECT_CLASSES = ["aspect-[3/4]", "aspect-square", "aspect-square", "aspect-[3/4]"];
 
 export function NotreHistoire() {
+  const { locale } = useLanguage();
   const [content, setContent] = useState<HistoireContent>(FALLBACK);
+  const isAr = locale === "ar";
 
   useEffect(() => {
     const supabase = createClient();
@@ -42,17 +47,21 @@ export function NotreHistoire() {
       });
   }, []);
 
+  const paragraphs = isAr && content.paragraphs_ar ? content.paragraphs_ar : content.paragraphs;
+
   return (
     <section id="notre-histoire" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         {/* Text */}
         <div>
-          <p className="text-primary text-xs uppercase tracking-[0.2em] mb-3 font-medium">{content.section_label}</p>
-          <h2 className="font-heading text-on-background text-3xl sm:text-4xl leading-tight font-medium mb-4">
-            {content.title}
+          <p className={`text-primary text-xs uppercase tracking-[0.2em] mb-3 font-medium ${isAr ? "font-arabic" : ""}`}>
+            {getLocalizedField(content, "section_label", locale) || getTranslation(locale, "notreHistoire.label")}
+          </p>
+          <h2 className={`font-heading text-on-background text-3xl sm:text-4xl leading-tight font-medium mb-4 ${isAr ? "font-arabic" : ""}`}>
+            {getLocalizedField(content, "title", locale) || getTranslation(locale, "notreHistoire.title")}
           </h2>
-          <div className="space-y-3 text-secondary text-base leading-relaxed">
-            {content.paragraphs.map((p, i) => (
+          <div className={`space-y-3 text-secondary text-base leading-relaxed ${isAr ? "font-arabic" : ""}`}>
+            {paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
           </div>

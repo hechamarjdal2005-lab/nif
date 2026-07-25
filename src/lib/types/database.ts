@@ -1,5 +1,6 @@
 export type Genre = "homme" | "femme" | "mixte";
 export type ProductType = "parfum" | "pack";
+export type CategoryType = "product" | "pack";
 export type OrderStatut = "en_attente" | "confirmee" | "expediee" | "livree" | "annulee";
 export type TypeReduction = "pourcentage" | "montant_fixe";
 export type SocialPlatform = "whatsapp" | "telephone" | "instagram" | "facebook" | "tiktok";
@@ -7,7 +8,9 @@ export type SocialPlatform = "whatsapp" | "telephone" | "instagram" | "facebook"
 export interface Category {
   id: string;
   nom: string;
+  nom_ar: string | null;
   slug: string;
+  type: CategoryType;
   image: string | null;
   created_at: string;
 }
@@ -15,9 +18,12 @@ export interface Category {
 export interface Product {
   id: string;
   nom: string;
+  nom_ar: string | null;
   slug: string;
   description: string | null;
+  description_ar: string | null;
   notes_olfactives: string | null;
+  notes_olfactives_ar: string | null;
   prix: number;
   categorie_id: string | null;
   genre: Genre;
@@ -82,8 +88,11 @@ export interface OrderItem {
 export interface Testimonial {
   id: string;
   nom: string;
+  nom_ar: string | null;
   ville: string | null;
+  ville_ar: string | null;
   texte: string;
+  texte_ar: string | null;
   rating: number;
   image: string | null;
   is_approved: boolean;
@@ -103,6 +112,7 @@ export interface ContactSocialLink {
   id: string;
   platform: SocialPlatform;
   label: string;
+  label_ar: string | null;
   href: string;
   value: string;
   sort_order: number;

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 const PAGE_TITLES: Record<string, string> = {
   "/admin": "Overview",
   "/admin/produits": "Produits",
+  "/admin/packs": "Packs",
   "/admin/categories": "Catégories",
   "/admin/commandes": "Commandes",
   "/admin/promo-codes": "Code Promo",

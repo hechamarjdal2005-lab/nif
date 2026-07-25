@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
+  Boxes,
   Tags,
   ShoppingCart,
   Percent,
@@ -23,6 +24,7 @@ import { useRouter } from "next/navigation";
 const navItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/produits", label: "Produits", icon: Package },
+  { href: "/admin/packs", label: "Packs", icon: Boxes },
   { href: "/admin/categories", label: "Catégories", icon: Tags },
   { href: "/admin/commandes", label: "Commandes", icon: ShoppingCart },
   { href: "/admin/promo-codes", label: "Code Promo", icon: Percent },

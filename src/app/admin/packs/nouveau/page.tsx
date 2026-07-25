@@ -8,25 +8,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
-import { ArrowLeft, ImagePlus, X } from "lucide-react";
+import { ArrowLeft, ImagePlus, X, Plus, Minus } from "lucide-react";
 import Link from "next/link";
-import { GENRES, PRODUCT_TYPES } from "@/lib/constants";
+import { GENRES } from "@/lib/constants";
+import { formatPrice } from "@/lib/utils";
+import type { Product } from "@/lib/types";
 
-type ProductFormData = {
+type PackFormData = {
   nom: string;
   nom_ar: string;
-  slug: string;
   description: string;
   description_ar: string;
-  notes_olfactives: string;
-  notes_olfactives_ar: string;
   prix: number;
   categorie_id: string;
   genre: string;
-  type: string;
   stock: number;
   is_bestseller: boolean;
   is_new: boolean;
+}
+
+interface PackItemSelection {
+  product_id: string;
+  quantite: number;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -40,33 +43,44 @@ function sanitizeFilename(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9.-]/g, "_").replace(/_{2,}/g, "_");
 }
 
-export default function AdminNewProductPage() {
+export default function AdminNewPackPage() {
   const router = useRouter();
   const [categories, setCategories] = useState<Array<{ id: string; nom: string }>>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [packItems, setPackItems] = useState<PackItemSelection[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [promoCodes, setPromoCodes] = useState<Array<{ id: string; code: string }>>([]);
+  const [promoCodeId, setPromoCodeId] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<ProductFormData>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<PackFormData>({
     defaultValues: {
       genre: "homme",
-      type: "parfum",
-      stock: 0,
+      stock: 10,
       is_bestseller: false,
       is_new: false,
     },
   });
 
+  const watchedPrix = watch("prix");
+
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("categories").select("id, nom").order("nom");
-      setCategories(data || []);
+      const [catsRes, productsRes, promoRes] = await Promise.all([
+        supabase.from("categories").select("id, nom").eq("type", "pack").order("nom"),
+        supabase.from("products").select("id, nom, prix, images").eq("type", "parfum").order("nom"),
+        supabase.from("promo_codes").select("id, code").eq("actif", true).order("code"),
+      ]);
+      setCategories(catsRes.data || []);
+      setAllProducts((productsRes.data || []) as unknown as Product[]);
+      setPromoCodes(promoRes.data || []);
     };
-    fetchCategories();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -137,7 +151,21 @@ export default function AdminNewProductPage() {
     }
   };
 
-  const onSubmit = async (data: ProductFormData) => {
+  const addPackItem = () => {
+    setPackItems((prev) => [...prev, { product_id: "", quantite: 1 }]);
+  };
+
+  const removePackItem = (index: number) => {
+    setPackItems((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updatePackItem = (index: number, field: "product_id" | "quantite", value: string | number) => {
+    setPackItems((prev) => prev.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
+    ));
+  };
+
+  const onSubmit = async (data: PackFormData) => {
     setIsSubmitting(true);
     try {
       const supabase = createClient();
@@ -154,38 +182,66 @@ export default function AdminNewProductPage() {
         slug: slugify(data.nom),
         description: data.description || null,
         description_ar: data.description_ar || null,
-        notes_olfactives: data.notes_olfactives || null,
-        notes_olfactives_ar: data.notes_olfactives_ar || null,
         prix: data.prix,
         categorie_id: data.categorie_id || null,
         genre: data.genre,
-        type: data.type,
+        type: "pack",
         stock: data.stock,
         is_bestseller: data.is_bestseller,
         is_new: data.is_new,
         images: imageUrl ? [imageUrl] : [],
       });
       if (error) throw error;
-      router.push("/admin/produits");
+
+      const { data: newPack } = await supabase
+        .from("products")
+        .select("id")
+        .eq("slug", slugify(data.nom))
+        .single();
+
+      if (newPack) {
+        const validItems = packItems.filter((item) => item.product_id && item.quantite > 0);
+        if (validItems.length > 0) {
+          const { error: itemsError } = await supabase.from("pack_items").insert(
+            validItems.map((item) => ({
+              pack_id: newPack.id,
+              produit_id: item.product_id,
+              quantite: item.quantite,
+            }))
+          );
+          if (itemsError) throw itemsError;
+        }
+
+        if (promoCodeId) {
+          await supabase.from("promo_codes").update({ produit_id: newPack.id }).eq("id", promoCodeId);
+        }
+      }
+
+      router.push("/admin/packs");
     } catch {
-      alert("Erreur lors de la création.");
+      alert("Erreur lors de la création du pack.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const totalContents = packItems.reduce((sum, item) => {
+    const product = allProducts.find((p) => p.id === item.product_id);
+    return sum + (product?.prix || 0) * item.quantite;
+  }, 0);
+
   return (
     <div className="max-w-2xl">
-      <Link href="/admin/produits" className="inline-flex items-center text-dark-500 hover:text-gold text-sm mb-6 transition-colors">
+      <Link href="/admin/packs" className="inline-flex items-center text-dark-500 hover:text-gold text-sm mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4 mr-1" />
         Retour
       </Link>
 
-      <h2 className="font-heading text-2xl text-white mb-6">Nouveau Produit</h2>
+      <h2 className="font-heading text-2xl text-white mb-6">Nouveau Pack</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
-          <label className="block text-sm text-dark-500 mb-1">Image du produit</label>
+          <label className="block text-sm text-dark-500 mb-1">Image du pack</label>
           <div className="flex flex-col gap-3">
             {imagePreview ? (
               <div className="relative inline-block w-fit">
@@ -214,13 +270,23 @@ export default function AdminNewProductPage() {
 
         <div>
           <label className="block text-sm text-dark-500 mb-1">Nom *</label>
-          <Input {...register("nom", { required: true })} placeholder="Nom du produit" className="bg-dark" />
+          <Input {...register("nom", { required: true })} placeholder="Nom du pack" className="bg-dark" />
           {errors.nom && <p className="text-red-400 text-xs mt-1">Nom requis</p>}
         </div>
 
         <div>
           <label className="block text-sm text-dark-500 mb-1">Nom (AR) <span className="text-dark-400">العربية</span></label>
-          <Input {...register("nom_ar")} placeholder="اسم المنتج" className="bg-dark" dir="rtl" />
+          <Input {...register("nom_ar")} placeholder="اسم الحزمة" className="bg-dark" dir="rtl" />
+        </div>
+
+        <div>
+          <label className="block text-sm text-dark-500 mb-1">Description</label>
+          <Textarea {...register("description")} rows={4} placeholder="Description du pack..." className="bg-dark" />
+        </div>
+
+        <div>
+          <label className="block text-sm text-dark-500 mb-1">Description (AR) <span className="text-dark-400">العربية</span></label>
+          <Textarea {...register("description_ar")} rows={4} placeholder="وصف الحزمة..." className="bg-dark" dir="rtl" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -229,8 +295,13 @@ export default function AdminNewProductPage() {
             <Select options={GENRES} {...register("genre")} className="bg-dark" />
           </div>
           <div>
-            <label className="block text-sm text-dark-500 mb-1">Type *</label>
-            <Select options={PRODUCT_TYPES} {...register("type")} className="bg-dark" />
+            <label className="block text-sm text-dark-500 mb-1">Catégorie</label>
+            <Select
+              options={categories.map((c) => ({ value: c.id, label: c.nom }))}
+              placeholder="Sélectionner..."
+              {...register("categorie_id")}
+              className="bg-dark"
+            />
           </div>
         </div>
 
@@ -246,34 +317,88 @@ export default function AdminNewProductPage() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm text-dark-500 mb-1">Catégorie</label>
-          <Select
-            options={categories.map((c) => ({ value: c.id, label: c.nom }))}
-            placeholder="Sélectionner..."
-            {...register("categorie_id")}
-            className="bg-dark"
-          />
+        {/* Pack Items */}
+        <div className="border border-dark-200 rounded-lg p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="text-sm text-dark-500 font-medium">Produits dans le pack</label>
+            <button
+              type="button"
+              onClick={addPackItem}
+              className="flex items-center gap-1 text-xs text-gold hover:text-gold-400 transition-colors"
+            >
+              <Plus className="w-3 h-3" />
+              Ajouter
+            </button>
+          </div>
+
+          {packItems.length === 0 && (
+            <p className="text-dark-400 text-xs">Aucun produit ajouté. Cliquez sur &quot;Ajouter&quot; pour commencer.</p>
+          )}
+
+          {packItems.map((item, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <select
+                value={item.product_id}
+                onChange={(e) => updatePackItem(index, "product_id", e.target.value)}
+                className="flex-1 bg-dark border border-dark-200 rounded-lg px-3 py-2 text-sm text-white"
+              >
+                <option value="">Choisir un produit...</option>
+                {allProducts.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.nom} — {formatPrice(p.prix)}
+                  </option>
+                ))}
+              </select>
+              <div className="flex items-center border border-dark-200 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => updatePackItem(index, "quantite", Math.max(1, item.quantite - 1))}
+                  className="p-1.5 text-dark-500 hover:text-white"
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="w-8 text-center text-sm text-white">{item.quantite}</span>
+                <button
+                  type="button"
+                  onClick={() => updatePackItem(index, "quantite", item.quantite + 1)}
+                  className="p-1.5 text-dark-500 hover:text-white"
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => removePackItem(index)}
+                className="p-1.5 text-dark-500 hover:text-red-400 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+
+          {packItems.length > 0 && (
+            <div className="pt-2 border-t border-dark-200 flex justify-between text-xs text-dark-500">
+              <span>Total séparé : {formatPrice(totalContents)}</span>
+              <span className="text-green-400">
+                Économie : {formatPrice(Math.max(0, totalContents - (watchedPrix || 0)))}
+              </span>
+            </div>
+          )}
         </div>
 
+        {/* Promo Code */}
         <div>
-          <label className="block text-sm text-dark-500 mb-1">Notes Olfactives</label>
-          <Input {...register("notes_olfactives")} placeholder="ex: Oud, Rose, Ambre" className="bg-dark" />
-        </div>
-
-        <div>
-          <label className="block text-sm text-dark-500 mb-1">Notes Olfactives (AR) <span className="text-dark-400">العربية</span></label>
-          <Input {...register("notes_olfactives_ar")} placeholder="النوتات العطرية" className="bg-dark" dir="rtl" />
-        </div>
-
-        <div>
-          <label className="block text-sm text-dark-500 mb-1">Description</label>
-          <Textarea {...register("description")} rows={4} placeholder="Description du produit..." className="bg-dark" />
-        </div>
-
-        <div>
-          <label className="block text-sm text-dark-500 mb-1">Description (AR) <span className="text-dark-400">العربية</span></label>
-          <Textarea {...register("description_ar")} rows={4} placeholder="وصف المنتج..." className="bg-dark" dir="rtl" />
+          <label className="block text-sm text-dark-500 mb-1">Code Promo (optionnel)</label>
+          <select
+            value={promoCodeId}
+            onChange={(e) => setPromoCodeId(e.target.value)}
+            className="w-full bg-dark border border-dark-200 rounded-lg px-3 py-2 text-sm text-white"
+          >
+            <option value="">Aucun</option>
+            {promoCodes.map((pc) => (
+              <option key={pc.id} value={pc.id}>{pc.code}</option>
+            ))}
+          </select>
         </div>
 
         <div className="flex gap-6">
@@ -288,7 +413,7 @@ export default function AdminNewProductPage() {
         </div>
 
         <Button type="submit" size="lg" disabled={isSubmitting || isUploadingImage}>
-          {isUploadingImage ? "Upload de l'image..." : isSubmitting ? "Création..." : "Créer le Produit"}
+          {isUploadingImage ? "Upload de l'image..." : isSubmitting ? "Création..." : "Créer le Pack"}
         </Button>
       </form>
     </div>

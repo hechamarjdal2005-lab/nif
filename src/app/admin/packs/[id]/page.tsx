@@ -8,25 +8,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
-import { ArrowLeft, ImagePlus, X } from "lucide-react";
-import { getImageUrl } from "@/lib/utils";
+import { ArrowLeft, ImagePlus, X, Plus, Minus } from "lucide-react";
 import Link from "next/link";
-import { GENRES, PRODUCT_TYPES } from "@/lib/constants";
+import { GENRES } from "@/lib/constants";
+import { formatPrice, getImageUrl } from "@/lib/utils";
+import type { Product, PackItem } from "@/lib/types";
 
-type ProductFormData = {
+type PackFormData = {
   nom: string;
   nom_ar: string;
   description: string;
   description_ar: string;
-  notes_olfactives: string;
-  notes_olfactives_ar: string;
   prix: number;
   categorie_id: string;
   genre: string;
-  type: string;
   stock: number;
   is_bestseller: boolean;
   is_new: boolean;
+}
+
+interface PackItemSelection {
+  id?: string;
+  product_id: string;
+  quantite: number;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -36,11 +40,13 @@ function sanitizeFilename(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9.-]/g, "_").replace(/_{2,}/g, "_");
 }
 
-export default function AdminEditProductPage() {
+export default function AdminEditPackPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
   const [categories, setCategories] = useState<Array<{ id: string; nom: string }>>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [packItems, setPackItems] = useState<PackItemSelection[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
@@ -48,39 +54,62 @@ export default function AdminEditProductPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [promoCodes, setPromoCodes] = useState<Array<{ id: string; code: string }>>([]);
+  const [promoCodeId, setPromoCodeId] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<ProductFormData>();
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm<PackFormData>();
+  const watchedPrix = watch("prix");
 
   useEffect(() => {
     const fetchData = async () => {
       const supabase = createClient();
-      const [productRes, catsRes] = await Promise.all([
-        supabase.from("products").select("*").eq("id", id).single(),
-        supabase.from("categories").select("id, nom").order("nom"),
+      const [packRes, catsRes, productsRes, promoRes] = await Promise.all([
+        supabase.from("products").select("*, pack_items(*)").eq("id", id).single(),
+        supabase.from("categories").select("id, nom").eq("type", "pack").order("nom"),
+        supabase.from("products").select("id, nom, prix, images").eq("type", "parfum").order("nom"),
+        supabase.from("promo_codes").select("id, code").eq("actif", true).order("code"),
       ]);
-      if (productRes.data) {
+
+      if (packRes.data) {
         reset({
-          nom: productRes.data.nom,
-          nom_ar: productRes.data.nom_ar || "",
-          description: productRes.data.description || "",
-          description_ar: productRes.data.description_ar || "",
-          notes_olfactives: productRes.data.notes_olfactives || "",
-          notes_olfactives_ar: productRes.data.notes_olfactives_ar || "",
-          prix: productRes.data.prix,
-          categorie_id: productRes.data.categorie_id || "",
-          genre: productRes.data.genre,
-          type: productRes.data.type,
-          stock: productRes.data.stock,
-          is_bestseller: productRes.data.is_bestseller,
-          is_new: productRes.data.is_new,
+          nom: packRes.data.nom,
+          nom_ar: packRes.data.nom_ar || "",
+          description: packRes.data.description || "",
+          description_ar: packRes.data.description_ar || "",
+          prix: packRes.data.prix,
+          categorie_id: packRes.data.categorie_id || "",
+          genre: packRes.data.genre,
+          stock: packRes.data.stock,
+          is_bestseller: packRes.data.is_bestseller,
+          is_new: packRes.data.is_new,
         });
-        const images = productRes.data.images as string[] | null;
+        const images = packRes.data.images as string[] | null;
         if (images && images.length > 0) {
           setExistingImageUrl(getImageUrl(images[0]));
         }
+        const existingItems = (packRes.data.pack_items || []) as (PackItem & { product?: Product })[];
+        setPackItems(
+          existingItems.map((item) => ({
+            id: item.id,
+            product_id: item.produit_id,
+            quantite: item.quantite,
+          }))
+        );
+
+        const packPromo = await supabase
+          .from("promo_codes")
+          .select("id")
+          .eq("produit_id", id)
+          .single();
+        if (packPromo.data) {
+          setPromoCodeId(packPromo.data.id);
+        }
       }
+
       setCategories(catsRes.data || []);
+      setAllProducts((productsRes.data || []) as unknown as Product[]);
+      setPromoCodes(promoRes.data || []);
       setLoading(false);
     };
     fetchData();
@@ -157,7 +186,21 @@ export default function AdminEditProductPage() {
     }
   };
 
-  const onSubmit = async (data: ProductFormData) => {
+  const addPackItem = () => {
+    setPackItems((prev) => [...prev, { product_id: "", quantite: 1 }]);
+  };
+
+  const removePackItem = (index: number) => {
+    setPackItems((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updatePackItem = (index: number, field: "product_id" | "quantite", value: string | number) => {
+    setPackItems((prev) => prev.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
+    ));
+  };
+
+  const onSubmit = async (data: PackFormData) => {
     setIsSubmitting(true);
     try {
       const supabase = createClient();
@@ -173,12 +216,9 @@ export default function AdminEditProductPage() {
         nom_ar: data.nom_ar || null,
         description: data.description || null,
         description_ar: data.description_ar || null,
-        notes_olfactives: data.notes_olfactives || null,
-        notes_olfactives_ar: data.notes_olfactives_ar || null,
         prix: data.prix,
         categorie_id: data.categorie_id || null,
         genre: data.genre,
-        type: data.type,
         stock: data.stock,
         is_bestseller: data.is_bestseller,
         is_new: data.is_new,
@@ -195,9 +235,29 @@ export default function AdminEditProductPage() {
         .update(updatePayload)
         .eq("id", id);
       if (error) throw error;
-      router.push("/admin/produits");
+
+      await supabase.from("pack_items").delete().eq("pack_id", id);
+
+      const validItems = packItems.filter((item) => item.product_id && item.quantite > 0);
+      if (validItems.length > 0) {
+        const { error: itemsError } = await supabase.from("pack_items").insert(
+          validItems.map((item) => ({
+            pack_id: id,
+            produit_id: item.product_id,
+            quantite: item.quantite,
+          }))
+        );
+        if (itemsError) throw itemsError;
+      }
+
+      await supabase.from("promo_codes").update({ produit_id: null }).eq("produit_id", id);
+      if (promoCodeId) {
+        await supabase.from("promo_codes").update({ produit_id: id }).eq("id", promoCodeId);
+      }
+
+      router.push("/admin/packs");
     } catch {
-      alert("Erreur lors de la mise à jour.");
+      alert("Erreur lors de la mise à jour du pack.");
     } finally {
       setIsSubmitting(false);
     }
@@ -207,18 +267,23 @@ export default function AdminEditProductPage() {
     return <div className="animate-pulse space-y-4">{[1, 2, 3].map((i) => <div key={i} className="h-12 bg-dark-100 rounded" />)}</div>;
   }
 
+  const totalContents = packItems.reduce((sum, item) => {
+    const product = allProducts.find((p) => p.id === item.product_id);
+    return sum + (product?.prix || 0) * item.quantite;
+  }, 0);
+
   return (
     <div className="max-w-2xl">
-      <Link href="/admin/produits" className="inline-flex items-center text-dark-500 hover:text-gold text-sm mb-6 transition-colors">
+      <Link href="/admin/packs" className="inline-flex items-center text-dark-500 hover:text-gold text-sm mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4 mr-1" />
         Retour
       </Link>
 
-      <h2 className="font-heading text-2xl text-white mb-6">Modifier le Produit</h2>
+      <h2 className="font-heading text-2xl text-white mb-6">Modifier le Pack</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
-          <label className="block text-sm text-dark-500 mb-1">Image du produit</label>
+          <label className="block text-sm text-dark-500 mb-1">Image du pack</label>
           <div className="flex flex-col gap-3">
             {currentDisplayImage ? (
               <div className="relative inline-block w-fit">
@@ -256,14 +321,29 @@ export default function AdminEditProductPage() {
           <Input {...register("nom_ar")} className="bg-dark" dir="rtl" />
         </div>
 
+        <div>
+          <label className="block text-sm text-dark-500 mb-1">Description</label>
+          <Textarea {...register("description")} rows={4} className="bg-dark" />
+        </div>
+
+        <div>
+          <label className="block text-sm text-dark-500 mb-1">Description (AR) <span className="text-dark-400">العربية</span></label>
+          <Textarea {...register("description_ar")} rows={4} className="bg-dark" dir="rtl" />
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-dark-500 mb-1">Genre *</label>
             <Select options={GENRES} {...register("genre")} className="bg-dark" />
           </div>
           <div>
-            <label className="block text-sm text-dark-500 mb-1">Type *</label>
-            <Select options={PRODUCT_TYPES} {...register("type")} className="bg-dark" />
+            <label className="block text-sm text-dark-500 mb-1">Catégorie</label>
+            <Select
+              options={categories.map((c) => ({ value: c.id, label: c.nom }))}
+              placeholder="Sélectionner..."
+              {...register("categorie_id")}
+              className="bg-dark"
+            />
           </div>
         </div>
 
@@ -278,34 +358,88 @@ export default function AdminEditProductPage() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm text-dark-500 mb-1">Catégorie</label>
-          <Select
-            options={categories.map((c) => ({ value: c.id, label: c.nom }))}
-            placeholder="Sélectionner..."
-            {...register("categorie_id")}
-            className="bg-dark"
-          />
+        {/* Pack Items */}
+        <div className="border border-dark-200 rounded-lg p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="text-sm text-dark-500 font-medium">Produits dans le pack</label>
+            <button
+              type="button"
+              onClick={addPackItem}
+              className="flex items-center gap-1 text-xs text-gold hover:text-gold-400 transition-colors"
+            >
+              <Plus className="w-3 h-3" />
+              Ajouter
+            </button>
+          </div>
+
+          {packItems.length === 0 && (
+            <p className="text-dark-400 text-xs">Aucun produit ajouté. Cliquez sur &quot;Ajouter&quot; pour commencer.</p>
+          )}
+
+          {packItems.map((item, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <select
+                value={item.product_id}
+                onChange={(e) => updatePackItem(index, "product_id", e.target.value)}
+                className="flex-1 bg-dark border border-dark-200 rounded-lg px-3 py-2 text-sm text-white"
+              >
+                <option value="">Choisir un produit...</option>
+                {allProducts.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.nom} — {formatPrice(p.prix)}
+                  </option>
+                ))}
+              </select>
+              <div className="flex items-center border border-dark-200 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => updatePackItem(index, "quantite", Math.max(1, item.quantite - 1))}
+                  className="p-1.5 text-dark-500 hover:text-white"
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="w-8 text-center text-sm text-white">{item.quantite}</span>
+                <button
+                  type="button"
+                  onClick={() => updatePackItem(index, "quantite", item.quantite + 1)}
+                  className="p-1.5 text-dark-500 hover:text-white"
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => removePackItem(index)}
+                className="p-1.5 text-dark-500 hover:text-red-400 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+
+          {packItems.length > 0 && (
+            <div className="pt-2 border-t border-dark-200 flex justify-between text-xs text-dark-500">
+              <span>Total séparé : {formatPrice(totalContents)}</span>
+              <span className="text-green-400">
+                Économie : {formatPrice(Math.max(0, totalContents - (watchedPrix || 0)))}
+              </span>
+            </div>
+          )}
         </div>
 
+        {/* Promo Code */}
         <div>
-          <label className="block text-sm text-dark-500 mb-1">Notes Olfactives</label>
-          <Input {...register("notes_olfactives")} className="bg-dark" />
-        </div>
-
-        <div>
-          <label className="block text-sm text-dark-500 mb-1">Notes Olfactives (AR) <span className="text-dark-400">العربية</span></label>
-          <Input {...register("notes_olfactives_ar")} className="bg-dark" dir="rtl" />
-        </div>
-
-        <div>
-          <label className="block text-sm text-dark-500 mb-1">Description</label>
-          <Textarea {...register("description")} rows={4} className="bg-dark" />
-        </div>
-
-        <div>
-          <label className="block text-sm text-dark-500 mb-1">Description (AR) <span className="text-dark-400">العربية</span></label>
-          <Textarea {...register("description_ar")} rows={4} className="bg-dark" dir="rtl" />
+          <label className="block text-sm text-dark-500 mb-1">Code Promo (optionnel)</label>
+          <select
+            value={promoCodeId}
+            onChange={(e) => setPromoCodeId(e.target.value)}
+            className="w-full bg-dark border border-dark-200 rounded-lg px-3 py-2 text-sm text-white"
+          >
+            <option value="">Aucun</option>
+            {promoCodes.map((pc) => (
+              <option key={pc.id} value={pc.id}>{pc.code}</option>
+            ))}
+          </select>
         </div>
 
         <div className="flex gap-6">

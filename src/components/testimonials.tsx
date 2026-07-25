@@ -4,11 +4,15 @@ import { useEffect, useState } from "react";
 import { StarRating } from "@/components/ui/star-rating";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation, getLocalizedField } from "@/lib/i18n";
 import type { Testimonial } from "@/lib/types";
 
 export function Testimonials() {
+  const { locale } = useLanguage();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
+  const ar = locale === "ar";
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -46,9 +50,9 @@ export function Testimonials() {
   return (
     <section id="temoignages" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
       <div className="text-center mb-10">
-        <h2 className="font-heading text-on-background text-3xl sm:text-4xl mb-3">Ce Que Disent Nos Clients</h2>
-        <p className="text-secondary text-base max-w-xl mx-auto">
-          Des mots précieux de ceux qui ont découvert nos créations
+        <h2 className={`font-heading text-on-background text-3xl sm:text-4xl mb-3 ${ar ? "font-arabic" : ""}`}>{getTranslation(locale, "testimonials.title")}</h2>
+        <p className={`text-secondary text-base max-w-xl mx-auto ${ar ? "font-arabic" : ""}`}>
+          {getTranslation(locale, "testimonials.subtitle")}
         </p>
       </div>
 
@@ -59,12 +63,12 @@ export function Testimonials() {
             className="bg-background border border-outline-variant/40 rounded-xl p-6 hover:border-primary/20 transition-all duration-300"
           >
             <StarRating rating={t.rating} size="sm" className="mb-4" />
-            <p className="text-secondary text-sm leading-relaxed mb-4 italic">
-              &ldquo;{t.texte}&rdquo;
+            <p className={`text-secondary text-sm leading-relaxed mb-4 italic ${ar ? "font-arabic" : ""}`}>
+              &ldquo;{getLocalizedField(t as unknown as Record<string, unknown>, "texte", locale)}&rdquo;
             </p>
             <div>
-              <p className="text-on-background font-medium text-sm">{t.nom}</p>
-              {t.ville && <p className="text-secondary text-xs">{t.ville}</p>}
+              <p className={`text-on-background font-medium text-sm ${ar ? "font-arabic" : ""}`}>{getLocalizedField(t as unknown as Record<string, unknown>, "nom", locale)}</p>
+              {t.ville && <p className={`text-secondary text-xs ${ar ? "font-arabic" : ""}`}>{getLocalizedField(t as unknown as Record<string, unknown>, "ville", locale)}</p>}
             </div>
           </div>
         ))}

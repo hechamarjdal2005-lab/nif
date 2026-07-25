@@ -5,7 +5,8 @@ import { Plus, Edit, Trash2, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
-import type { Category } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import type { Category, CategoryType } from "@/lib/types";
 
 function slugify(text: string) {
   return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
@@ -15,8 +16,13 @@ export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [newName, setNewName] = useState("");
+  const [newNameAr, setNewNameAr] = useState("");
+  const [newType, setNewType] = useState<CategoryType>("product");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [editingNameAr, setEditingNameAr] = useState("");
+  const [editingType, setEditingType] = useState<CategoryType>("product");
+  const [filterType, setFilterType] = useState<"all" | CategoryType>("all");
 
   const fetchCategories = async () => {
     const supabase = createClient();
@@ -32,11 +38,13 @@ export default function AdminCategoriesPage() {
     const supabase = createClient();
     const { data } = await supabase
       .from("categories")
-      .insert({ nom: newName.trim(), slug: slugify(newName.trim()) })
+      .insert({ nom: newName.trim(), nom_ar: newNameAr.trim() || null, slug: slugify(newName.trim()), type: newType })
       .select()
       .single();
     if (data) setCategories((prev) => [...prev, data as unknown as Category].sort((a, b) => a.nom.localeCompare(b.nom)));
     setNewName("");
+    setNewNameAr("");
+    setNewType("product");
   };
 
   const handleUpdate = async (id: string) => {
@@ -44,11 +52,13 @@ export default function AdminCategoriesPage() {
     const supabase = createClient();
     await supabase
       .from("categories")
-      .update({ nom: editingName.trim(), slug: slugify(editingName.trim()) })
+      .update({ nom: editingName.trim(), nom_ar: editingNameAr.trim() || null, slug: slugify(editingName.trim()), type: editingType })
       .eq("id", id);
-    setCategories((prev) => prev.map((c) => c.id === id ? { ...c, nom: editingName.trim(), slug: slugify(editingName.trim()) } : c));
+    setCategories((prev) => prev.map((c) => c.id === id ? { ...c, nom: editingName.trim(), nom_ar: editingNameAr.trim() || null, slug: slugify(editingName.trim()), type: editingType } : c));
     setEditingId(null);
     setEditingName("");
+    setEditingNameAr("");
+    setEditingType("product");
   };
 
   const handleDelete = async (id: string) => {
@@ -62,27 +72,65 @@ export default function AdminCategoriesPage() {
     return <div className="animate-pulse space-y-4">{[1, 2, 3].map((i) => <div key={i} className="h-12 bg-dark-100 rounded" />)}</div>;
   }
 
+  const filtered = filterType === "all" ? categories : categories.filter((c) => (c.type || "product") === filterType);
+
   return (
     <div className="max-w-2xl space-y-6">
       <h2 className="font-heading text-2xl text-white">Catégories</h2>
 
-      {/* Add new */}
+      {/* Filter */}
       <div className="flex gap-2">
-        <Input
-          placeholder="Nouvelle catégorie..."
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-          className="bg-dark"
-        />
-        <Button onClick={handleAdd} disabled={!newName.trim()}>
-          <Plus className="w-4 h-4" />
-        </Button>
+        {(["all", "product", "pack"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setFilterType(t)}
+            className={cn(
+              "px-3 py-1.5 text-xs rounded-lg border transition-colors",
+              filterType === t
+                ? "border-gold bg-gold/10 text-gold"
+                : "border-dark-200 text-dark-500 hover:text-white hover:border-dark-300"
+            )}
+          >
+            {t === "all" ? "Toutes" : t === "product" ? "Produits" : "Packs"}
+          </button>
+        ))}
+      </div>
+
+      {/* Add new */}
+      <div className="space-y-2">
+        <div className="flex gap-2">
+          <Input
+            placeholder="Nouvelle catégorie..."
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+            className="bg-dark flex-1"
+          />
+          <Input
+            placeholder="الاسم بالعربية..."
+            value={newNameAr}
+            onChange={(e) => setNewNameAr(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+            className="bg-dark flex-1"
+            dir="rtl"
+          />
+          <select
+            value={newType}
+            onChange={(e) => setNewType(e.target.value as CategoryType)}
+            className="bg-dark border border-dark-200 rounded-lg px-3 py-2 text-sm text-white"
+          >
+            <option value="product">Produit</option>
+            <option value="pack">Pack</option>
+          </select>
+          <Button onClick={handleAdd} disabled={!newName.trim()}>
+            <Plus className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       {/* List */}
       <div className="space-y-2">
-        {categories.map((cat) => (
+        {filtered.map((cat) => (
           <div
             key={cat.id}
             className="flex items-center gap-3 p-3 rounded-lg border border-dark-200 bg-dark-50"
@@ -96,19 +144,42 @@ export default function AdminCategoriesPage() {
                   className="bg-dark flex-1"
                   autoFocus
                 />
+                <Input
+                  value={editingNameAr}
+                  onChange={(e) => setEditingNameAr(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleUpdate(cat.id)}
+                  className="bg-dark flex-1"
+                  dir="rtl"
+                  placeholder="العربية"
+                />
+                <select
+                  value={editingType}
+                  onChange={(e) => setEditingType(e.target.value as CategoryType)}
+                  className="bg-dark border border-dark-200 rounded-lg px-3 py-2 text-sm text-white"
+                >
+                  <option value="product">Produit</option>
+                  <option value="pack">Pack</option>
+                </select>
                 <button onClick={() => handleUpdate(cat.id)} className="p-2 text-green-400 hover:text-green-300">
                   <Check className="w-4 h-4" />
                 </button>
-                <button onClick={() => { setEditingId(null); setEditingName(""); }} className="p-2 text-dark-500 hover:text-white">
+                <button onClick={() => { setEditingId(null); setEditingName(""); setEditingNameAr(""); setEditingType("product"); }} className="p-2 text-dark-500 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </>
             ) : (
               <>
                 <span className="flex-1 text-white text-sm">{cat.nom}</span>
+                {cat.nom_ar && <span className="text-dark-400 text-sm" dir="rtl">{cat.nom_ar}</span>}
+                <span className={cn(
+                  "text-xs px-2 py-0.5 rounded-full",
+                  (cat.type || "product") === "pack" ? "bg-gold/10 text-gold" : "bg-dark-200 text-dark-500"
+                )}>
+                  {(cat.type || "product") === "pack" ? "Pack" : "Produit"}
+                </span>
                 <span className="text-xs text-dark-500">{cat.slug}</span>
                 <button
-                  onClick={() => { setEditingId(cat.id); setEditingName(cat.nom); }}
+                  onClick={() => { setEditingId(cat.id); setEditingName(cat.nom); setEditingNameAr(cat.nom_ar || ""); setEditingType(cat.type || "product"); }}
                   className="p-2 text-dark-500 hover:text-gold transition-colors"
                 >
                   <Edit className="w-4 h-4" />

@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice, getImageUrl } from "@/lib/utils";
 import { useCart } from "@/lib/cart-context";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation, getLocalizedField } from "@/lib/i18n";
 import type { Product, PackItem } from "@/lib/types";
 
 interface PackDetailProps {
@@ -18,6 +20,8 @@ export function PackDetail({ pack }: PackDetailProps) {
   const [quantite, setQuantite] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const { addItem } = useCart();
+  const { locale } = useLanguage();
+  const ar = locale === "ar";
 
   const images = pack.images && pack.images.length > 0 ? pack.images : [];
   const packItems = pack.pack_items || [];
@@ -35,7 +39,7 @@ export function PackDetail({ pack }: PackDetailProps) {
           {images[selectedImage] ? (
             <Image
               src={getImageUrl(images[selectedImage])}
-              alt={pack.nom}
+              alt={getLocalizedField(pack as unknown as Record<string, unknown>, "nom", locale)}
               fill
               className="object-cover"
               priority
@@ -66,26 +70,26 @@ export function PackDetail({ pack }: PackDetailProps) {
 
       {/* Info */}
       <div>
-        <Badge variant="default" className="mb-3">Coffret</Badge>
-        <h1 className="font-heading text-on-background text-3xl mb-3">{pack.nom}</h1>
+        <Badge variant="default" className="mb-3">{getTranslation(locale, "pack.coffret")}</Badge>
+        <h1 className={`font-heading text-on-background text-3xl mb-3 ${ar ? "font-arabic" : ""}`}>{getLocalizedField(pack as unknown as Record<string, unknown>, "nom", locale)}</h1>
 
         <div className="flex items-baseline gap-3 mb-4">
           <span className="text-primary text-2xl font-semibold">{formatPrice(pack.prix)}</span>
           {savings > 0 && (
             <>
               <span className="text-secondary line-through">{formatPrice(totalSeparate)}</span>
-              <Badge variant="success">Économisez {formatPrice(savings)}</Badge>
+              <Badge variant="success">{getTranslation(locale, "pack.save")} {formatPrice(savings)}</Badge>
             </>
           )}
         </div>
 
         {pack.description && (
-          <p className="text-sm sm:text-base text-secondary leading-relaxed mb-5">{pack.description}</p>
+          <p className={`text-sm sm:text-base text-secondary leading-relaxed mb-5 ${ar ? "font-arabic" : ""}`}>{pack.description}</p>
         )}
 
         {/* Pack Contents */}
         <div className="mb-5">
-          <h3 className="text-xs font-medium text-secondary uppercase tracking-[0.1em] mb-3">Contenu du Coffret</h3>
+          <h3 className={`text-xs font-medium text-secondary uppercase tracking-[0.1em] mb-3 ${ar ? "font-arabic" : ""}`}>{getTranslation(locale, "pack.contents")}</h3>
           <div className="space-y-2">
             {packItems.map((item) => (
               <Link
@@ -109,11 +113,11 @@ export function PackDetail({ pack }: PackDetailProps) {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-on-background text-sm font-medium truncate group-hover:text-primary transition-colors">
-                    {item.product?.nom}
+                  <p className={`text-on-background text-sm font-medium truncate group-hover:text-primary transition-colors ${ar ? "font-arabic" : ""}`}>
+                    {getLocalizedField(item.product as unknown as Record<string, unknown>, "nom", locale)}
                   </p>
-                  <p className="text-secondary text-xs">
-                    Qté: {item.quantite} × {formatPrice(item.product?.prix || 0)}
+                  <p className={`text-secondary text-xs ${ar ? "font-arabic" : ""}`}>
+                    {getTranslation(locale, "pack.qty")}: {item.quantite} × {formatPrice(item.product?.prix || 0)}
                   </p>
                 </div>
                 <span className="text-primary text-sm font-medium">
@@ -141,9 +145,9 @@ export function PackDetail({ pack }: PackDetailProps) {
               <Plus className="w-4 h-4" />
             </button>
           </div>
-          <Button className="flex-1" onClick={() => addItem(pack, quantite)}>
+          <Button className={`flex-1 ${ar ? "font-arabic" : ""}`} onClick={() => addItem(pack, quantite)}>
             <ShoppingBag className="w-5 h-5 mr-2" />
-            Ajouter au Panier
+            {getTranslation(locale, "pack.addToCart")}
           </Button>
         </div>
       </div>

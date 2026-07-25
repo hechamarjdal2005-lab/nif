@@ -10,7 +10,9 @@ import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useCart } from "@/lib/cart-context";
 import { createClient } from "@/lib/supabase/client";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation } from "@/lib/i18n";
 import { ShoppingBag, Tag, CheckCircle } from "lucide-react";
 
 type CheckoutFormData = {
@@ -24,6 +26,8 @@ type CheckoutFormData = {
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotal, clearCart, isLoading } = useCart();
+  const { locale } = useLanguage();
+  const isAr = locale === "ar";
   const [promoCode, setPromoCode] = useState("");
   const [promoResult, setPromoResult] = useState<{
     reduction: number;
@@ -71,7 +75,7 @@ export default function CheckoutPage() {
         setPromoResult(data);
       }
     } catch {
-      setPromoError("Erreur lors de la vérification du code promo.");
+      setPromoError(getTranslation(locale, "checkout.promoError"));
     } finally {
       setIsCheckingPromo(false);
     }
@@ -115,7 +119,7 @@ export default function CheckoutPage() {
       clearCart();
       setIsSuccess(true);
     } catch {
-      alert("Une erreur est survenue. Veuillez réessayer.");
+      alert(getTranslation(locale, "checkout.error"));
     } finally {
       setIsSubmitting(false);
     }
@@ -142,11 +146,11 @@ export default function CheckoutPage() {
         <Navbar />
         <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto text-center">
           <CheckCircle className="w-20 h-20 text-primary mx-auto mb-6" />
-          <h1 className="font-heading text-on-background text-3xl sm:text-4xl mb-4 font-medium">Commande Passée !</h1>
-          <p className="text-secondary mb-8">
-            Merci pour votre commande. Nous vous contacterons bientôt pour la livraison.
+          <h1 className={cn("font-heading text-on-background text-3xl sm:text-4xl mb-4 font-medium", isAr && "font-arabic")}>{getTranslation(locale, "checkout.successTitle")}</h1>
+          <p className={cn("text-secondary mb-8", isAr && "font-arabic")}>
+            {getTranslation(locale, "checkout.successBody")}
           </p>
-          <Button onClick={() => router.push("/")}>Retour à l&apos;accueil</Button>
+          <Button onClick={() => router.push("/")} className={cn(isAr && "font-arabic")}>{getTranslation(locale, "checkout.backHome")}</Button>
         </div>
         <Footer />
       </main>
@@ -160,8 +164,8 @@ export default function CheckoutPage() {
         <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
           <EmptyState
             icon={<ShoppingBag className="w-16 h-16" />}
-            title="Votre panier est vide"
-            description="Ajoutez des produits avant de passer commande."
+            title={getTranslation(locale, "checkout.emptyTitle")}
+            description={getTranslation(locale, "checkout.emptyDesc")}
           />
         </div>
         <Footer />
@@ -173,75 +177,75 @@ export default function CheckoutPage() {
     <main>
       <Navbar />
       <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <h1 className="font-heading text-on-background text-3xl sm:text-4xl mb-8 font-medium">Checkout</h1>
+        <h1 className={cn("font-heading text-on-background text-3xl sm:text-4xl mb-8 font-medium", isAr && "font-arabic")}>Checkout</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-2 space-y-6">
-            <h2 className="font-heading text-on-background text-xl">Informations de Livraison</h2>
+            <h2 className={cn("font-heading text-on-background text-xl", isAr && "font-arabic")}>{getTranslation(locale, "checkout.shippingTitle")}</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Input placeholder="Nom complet *" {...register("nom")} className="bg-surface-container-low" />
-                {errors.nom && <p className="text-red-500 text-xs mt-1">Nom requis</p>}
+                <Input placeholder={getTranslation(locale, "checkout.name")} {...register("nom")} className="bg-surface-container-low" />
+                {errors.nom && <p className="text-red-500 text-xs mt-1">{getTranslation(locale, "checkout.nameReq")}</p>}
               </div>
               <div>
-                <Input placeholder="Téléphone *" {...register("tel")} className="bg-surface-container-low" />
-                {errors.tel && <p className="text-red-500 text-xs mt-1">Téléphone requis</p>}
+                <Input placeholder={getTranslation(locale, "checkout.phone")} {...register("tel")} className="bg-surface-container-low" />
+                {errors.tel && <p className="text-red-500 text-xs mt-1">{getTranslation(locale, "checkout.phoneReq")}</p>}
               </div>
             </div>
 
             <div>
-              <Input type="email" placeholder="Email (optionnel)" {...register("email")} className="bg-surface-container-low" />
+              <Input type="email" placeholder={getTranslation(locale, "checkout.email")} {...register("email")} className="bg-surface-container-low" />
             </div>
 
             <div>
-              <Input placeholder="Adresse complète *" {...register("adresse")} className="bg-surface-container-low" />
-              {errors.adresse && <p className="text-red-500 text-xs mt-1">Adresse requise</p>}
+              <Input placeholder={getTranslation(locale, "checkout.address")} {...register("adresse")} className="bg-surface-container-low" />
+              {errors.adresse && <p className="text-red-500 text-xs mt-1">{getTranslation(locale, "checkout.addressReq")}</p>}
             </div>
 
             <div>
-              <Input placeholder="Ville *" {...register("ville")} className="bg-surface-container-low" />
-              {errors.ville && <p className="text-red-500 text-xs mt-1">Ville requise</p>}
+              <Input placeholder={getTranslation(locale, "checkout.city")} {...register("ville")} className="bg-surface-container-low" />
+              {errors.ville && <p className="text-red-500 text-xs mt-1">{getTranslation(locale, "checkout.cityReq")}</p>}
             </div>
 
             {/* Promo Code */}
             <div className="border border-outline-variant/40 rounded-xl p-4">
-              <h3 className="text-sm font-medium text-on-background mb-3 flex items-center gap-2">
+              <h3 className={cn("text-sm font-medium text-on-background mb-3 flex items-center gap-2", isAr && "font-arabic")}>
                 <Tag className="w-4 h-4 text-primary" />
-                Code Promo
+                {getTranslation(locale, "checkout.promoTitle")}
               </h3>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Entrez votre code"
+                  placeholder={getTranslation(locale, "checkout.promoPlaceholder")}
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                   className="bg-surface-container-low flex-1"
                 />
-                <Button type="button" variant="outline" onClick={handleApplyPromo} disabled={isCheckingPromo}>
-                  {isCheckingPromo ? "..." : "Appliquer"}
+                <Button type="button" variant="outline" onClick={handleApplyPromo} disabled={isCheckingPromo} className={cn(isAr && "font-arabic")}>
+                  {isCheckingPromo ? "..." : getTranslation(locale, "checkout.apply")}
                 </Button>
               </div>
               {promoError && <p className="text-red-500 text-xs mt-2">{promoError}</p>}
               {promoResult && (
                 <p className="text-green-600 text-xs mt-2">
-                  Réduction de {formatPrice(promoResult.reduction)} appliquée !
+                  {getTranslation(locale, "checkout.promoSuccess").replace("{amount}", formatPrice(promoResult.reduction))}
                 </p>
               )}
             </div>
 
-            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Traitement en cours..." : `Payer ${formatPrice(total)}`}
+            <Button type="submit" size="lg" className={cn("w-full", isAr && "font-arabic")} disabled={isSubmitting}>
+              {isSubmitting ? getTranslation(locale, "checkout.processing") : getTranslation(locale, "checkout.pay").replace("{total}", formatPrice(total))}
             </Button>
-            <p className="text-xs text-secondary text-center">
-              Paiement à la livraison (Cash on Delivery)
+            <p className={cn("text-xs text-secondary text-center", isAr && "font-arabic")}>
+              {getTranslation(locale, "checkout.paymentInfo")}
             </p>
           </form>
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="p-6 rounded-xl border border-outline-variant/40 bg-background sticky top-24">
-              <h2 className="font-heading text-on-background text-xl mb-4">Votre Commande</h2>
+              <h2 className={cn("font-heading text-on-background text-xl mb-4", isAr && "font-arabic")}>{getTranslation(locale, "checkout.orderSummary")}</h2>
               <div className="space-y-3 mb-4">
                 {items.map((item) => (
                   <div key={item.product.id} className="flex justify-between text-sm">
@@ -257,22 +261,22 @@ export default function CheckoutPage() {
               <hr className="border-outline-variant/40 mb-4" />
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-secondary">Sous-total</span>
+                  <span className={cn("text-secondary", isAr && "font-arabic")}>{getTranslation(locale, "checkout.subtotal")}</span>
                   <span className="text-on-background">{formatPrice(subtotal)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-green-600">Réduction</span>
+                    <span className="text-green-600">{getTranslation(locale, "checkout.reduction")}</span>
                     <span className="text-green-600">-{formatPrice(discount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
-                  <span className="text-secondary">Livraison</span>
-                  <span className="text-primary">Gratuite</span>
+                  <span className={cn("text-secondary", isAr && "font-arabic")}>{getTranslation(locale, "checkout.shippingLabel")}</span>
+                  <span className={cn("text-primary", isAr && "font-arabic")}>{getTranslation(locale, "checkout.freeShipping")}</span>
                 </div>
                 <hr className="border-outline-variant/40" />
                 <div className="flex justify-between">
-                  <span className="text-on-background font-medium">Total</span>
+                  <span className={cn("text-on-background font-medium", isAr && "font-arabic")}>{getTranslation(locale, "checkout.totalLabel")}</span>
                   <span className="text-primary font-semibold text-lg">{formatPrice(total)}</span>
                 </div>
               </div>

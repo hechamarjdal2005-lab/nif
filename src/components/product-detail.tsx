@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
 import { formatPrice, getImageUrl } from "@/lib/utils";
 import { useCart } from "@/lib/cart-context";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation, getLocalizedField } from "@/lib/i18n";
 import type { Product } from "@/lib/types";
 
 interface ProductDetailProps {
@@ -18,6 +20,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const [quantite, setQuantite] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const { addItem } = useCart();
+  const { locale } = useLanguage();
+  const ar = locale === "ar";
 
   const images = product.images && product.images.length > 0 ? product.images : [];
 
@@ -29,7 +33,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           {images[selectedImage] ? (
             <Image
               src={getImageUrl(images[selectedImage])}
-              alt={product.nom}
+              alt={getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale)}
               fill
               className="object-cover"
               priority
@@ -61,12 +65,12 @@ export function ProductDetail({ product }: ProductDetailProps) {
       {/* Product Info */}
       <div>
         <div className="flex items-center gap-3 mb-3">
-          {product.is_new && <Badge variant="default">Nouveau</Badge>}
+          {product.is_new && <Badge variant="default">{getTranslation(locale, "product.nouveau")}</Badge>}
           {product.is_bestseller && <Badge variant="outline">Best Seller</Badge>}
           {product.category && <Badge variant="outline">{product.category.nom}</Badge>}
         </div>
 
-        <h1 className="font-heading text-2xl sm:text-3xl text-on-background mb-3">{product.nom}</h1>
+        <h1 className={`font-heading text-2xl sm:text-3xl text-on-background mb-3 ${ar ? "font-arabic" : ""}`}>{getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale)}</h1>
 
         <div className="flex items-center gap-3 mb-5">
           <StarRating rating={product.rating_avg} size="md" />
@@ -79,21 +83,21 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
         {product.notes_olfactives && (
           <div className="mb-5">
-            <h3 className="text-sm font-medium text-secondary uppercase tracking-[0.1em] mb-2">Notes Olfactives</h3>
-            <p className="text-on-background">{product.notes_olfactives}</p>
+            <h3 className={`text-sm font-medium text-secondary uppercase tracking-[0.1em] mb-2 ${ar ? "font-arabic" : ""}`}>{getTranslation(locale, "product.notesOlfactives")}</h3>
+            <p className={`text-on-background ${ar ? "font-arabic" : ""}`}>{getLocalizedField(product as unknown as Record<string, unknown>, "notes_olfactives", locale)}</p>
           </div>
         )}
 
         {product.description && (
           <div className="mb-5">
-            <h3 className="text-sm font-medium text-secondary uppercase tracking-[0.1em] mb-2">Description</h3>
-            <p className="text-secondary leading-relaxed">{product.description}</p>
+            <h3 className={`text-sm font-medium text-secondary uppercase tracking-[0.1em] mb-2 ${ar ? "font-arabic" : ""}`}>{getTranslation(locale, "product.description")}</h3>
+            <p className={`text-secondary leading-relaxed ${ar ? "font-arabic" : ""}`}>{getLocalizedField(product as unknown as Record<string, unknown>, "description", locale)}</p>
           </div>
         )}
 
         <div className="mb-5">
-          <span className={`text-sm ${product.stock > 0 ? "text-green-400" : "text-red-400"}`}>
-            {product.stock > 0 ? `En stock (${product.stock})` : "Rupture de stock"}
+          <span className={`text-sm ${product.stock > 0 ? "text-green-400" : "text-red-400"} ${ar ? "font-arabic" : ""}`}>
+            {product.stock > 0 ? `${getTranslation(locale, "product.inStock")} (${product.stock})` : getTranslation(locale, "product.outOfStock")}
           </span>
         </div>
 
@@ -115,12 +119,12 @@ export function ProductDetail({ product }: ProductDetailProps) {
             </button>
           </div>
           <Button
-            className="flex-1"
+            className={`flex-1 ${ar ? "font-arabic" : ""}`}
             disabled={product.stock === 0}
             onClick={() => addItem(product, quantite)}
           >
             <ShoppingBag className="w-5 h-5 mr-2" />
-            Ajouter au Panier
+            {getTranslation(locale, "product.addToCart")}
           </Button>
         </div>
       </div>

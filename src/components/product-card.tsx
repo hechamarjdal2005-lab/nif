@@ -7,6 +7,8 @@ import { cn, formatPrice, getImageUrl } from "@/lib/utils";
 import { StarRating } from "@/components/ui/star-rating";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/lib/cart-context";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation, getLocalizedField } from "@/lib/i18n";
 import type { Product } from "@/lib/types";
 
 interface ProductCardProps {
@@ -17,6 +19,8 @@ interface ProductCardProps {
 
 export function ProductCard({ product, discountedPrice, className }: ProductCardProps) {
   const { addItem } = useCart();
+  const { locale } = useLanguage();
+  const ar = locale === "ar";
 
   return (
     <div
@@ -31,7 +35,7 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
           {product.images && product.images[0] ? (
             <Image
               src={getImageUrl(product.images[0])}
-              alt={product.nom}
+              alt={getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale)}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -45,7 +49,7 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {product.is_new && <Badge variant="default">Nouveau</Badge>}
+            {product.is_new && <Badge variant="default">{getTranslation(locale, "product.nouveau")}</Badge>}
             {product.is_bestseller && <Badge variant="outline">Best Seller</Badge>}
           </div>
         </div>
@@ -59,8 +63,8 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
         </div>
 
         <Link href={product.type === "pack" ? `/pack/${product.slug}` : `/produit/${product.slug}`}>
-          <h3 className="font-heading text-base text-on-background group-hover:text-primary transition-colors mb-1 line-clamp-1">
-            {product.nom}
+          <h3 className={`font-heading text-base text-on-background group-hover:text-primary transition-colors mb-1 line-clamp-1 ${ar ? "font-arabic" : ""}`}>
+            {getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale)}
           </h3>
         </Link>
 

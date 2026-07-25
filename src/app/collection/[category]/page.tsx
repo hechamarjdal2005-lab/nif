@@ -1,85 +1,92 @@
-import { createClient } from "@/lib/supabase/server";
+"use client";
+
+import { useState, useEffect } from "react";
+import { use } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CollectionContent } from "@/components/collection-content";
+import { useLanguage } from "@/lib/language-context";
+import { getTranslation } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 import type { Product, Category } from "@/lib/types";
 
 const VALID_CATEGORIES = ["homme", "femme", "packs", "cadeaux", "nouveautes", "best-sellers"];
 
-async function getFilteredProducts(category: string): Promise<Product[]> {
-  try {
-    const supabase = await createClient();
-    let query = supabase.from("products").select("*");
-
-    switch (category) {
-      case "homme":
-        query = query.eq("genre", "homme");
-        break;
-      case "femme":
-        query = query.eq("genre", "femme");
-        break;
-      case "packs":
-        query = query.eq("type", "pack");
-        break;
-      case "best-sellers":
-        query = query.eq("is_bestseller", true);
-        break;
-      case "nouveautes":
-        query = query.eq("is_new", true);
-        break;
-      // cadeaux - show all as gift ideas
-    }
-
-    const { data } = await query.order("created_at", { ascending: false });
-    return (data || []) as unknown as Product[];
-  } catch {
-    return [];
-  }
-}
-
-async function getCategories(): Promise<Category[]> {
-  try {
-    const supabase = await createClient();
-    const { data } = await supabase.from("categories").select("*").order("nom");
-    return (data || []) as unknown as Category[];
-  } catch {
-    return [];
-  }
-}
-
-const CATEGORY_TITLES: Record<string, string> = {
-  homme: "Collection Homme",
-  femme: "Collection Femme",
-  packs: "Coffrets & Packs",
-  cadeaux: "Idées Cadeaux",
-  nouveautes: "Nouveautés",
-  "best-sellers": "Best Sellers",
+const CATEGORY_TITLES: Record<string, { fr: string; ar: string }> = {
+  homme: { fr: "Collection Homme", ar: "مجموعة رجال" },
+  femme: { fr: "Collection Femme", ar: "مجموعة نساء" },
+  packs: { fr: "Coffrets & Packs", ar: "حِزم ومجموعات" },
+  cadeaux: { fr: "Idées Cadeaux", ar: "أفكار هدايا" },
+  nouveautes: { fr: "Nouveautés", ar: "وصل حديثاً" },
+  "best-sellers": { fr: "Best Sellers", ar: "الأكثر مبيعاً" },
 };
 
-export default async function CategoryPage({
+export default function CategoryPage({
   params,
 }: {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }) {
-  const { category } = params;
+  const { category } = use(params);
+  const { locale } = useLanguage();
+  const isAr = locale === "ar";
+
   if (!VALID_CATEGORIES.includes(category)) notFound();
 
-  const [products, categories] = await Promise.all([
-    getFilteredProducts(category),
-    getCategories(),
-  ]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const supabase = createClient();
+        let query = supabase.from("products").select("*");
+
+        switch (category) {
+          case "homme":
+            query = query.eq("genre", "homme");
+            break;
+          case "femme":
+            query = query.eq("genre", "femme");
+            break;
+          case "packs":
+            query = query.eq("type", "pack");
+            break;
+          case "best-sellers":
+            query = query.eq("is_bestseller", true);
+            break;
+          case "nouveautes":
+            query = query.eq("is_new", true);
+            break;
+        }
+
+        const [productsRes, categoriesRes] = await Promise.all([
+          query.order("created_at", { ascending: false }),
+          supabase.from("categories").select("*").order("nom"),
+        ]);
+        setProducts((productsRes.data || []) as unknown as Product[]);
+        setCategories((categoriesRes.data || []) as unknown as Category[]);
+      } catch {
+        setProducts([]);
+        setCategories([]);
+      }
+    }
+    fetchData();
+  }, [category]);
+
+  const categoryTitle = CATEGORY_TITLES[category]?.[isAr ? "ar" : "fr"] ?? CATEGORY_TITLES[category]?.fr ?? category;
 
   return (
     <main>
       <Navbar />
       <div className="pt-20 pb-12 px-4 sm:px-6 max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium">
-            {CATEGORY_TITLES[category]}
+          <h1 className={cn("font-heading text-on-background text-3xl sm:text-4xl mb-3 font-medium", isAr && "font-arabic")}>
+            {categoryTitle}
           </h1>
-          <p className="text-secondary max-w-xl mx-auto">
-            Découvrez notre sélection de parfums artisanaux
+          <p className={cn("text-secondary max-w-xl mx-auto", isAr && "font-arabic")}>
+            {getTranslation(locale, "collection.subtitle")}
           </p>
         </div>
         <CollectionContent
