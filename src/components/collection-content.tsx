@@ -9,7 +9,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
-import { getTranslation, getLocalizedField } from "@/lib/i18n";
+import { getTranslation } from "@/lib/i18n";
 import type { Product, Category } from "@/lib/types";
 
 interface CollectionContentProps {

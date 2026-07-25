@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Package } from "lucide-react";
+import { Package, ShoppingBag } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { formatPrice, getImageUrl, cn } from "@/lib/utils";
+import { useCart } from "@/lib/cart-context";
 import { useLanguage } from "@/lib/language-context";
 import { getTranslation, getLocalizedField } from "@/lib/i18n";
 import type { Product, PackItem } from "@/lib/types";
@@ -14,6 +15,7 @@ type PackWithItems = Product & { pack_items: (PackItem & { product?: Product })[
 
 export function PacksSection() {
   const [packs, setPacks] = useState<PackWithItems[]>([]);
+  const { addItem } = useCart();
   const { locale } = useLanguage();
   const isAr = locale === "ar";
 
@@ -23,11 +25,29 @@ export function PacksSection() {
         const supabase = createClient();
         const { data } = await supabase
           .from("products")
-          .select("*, pack_items(*, product:products(*))")
+          .select("*")
           .eq("type", "pack")
           .order("created_at", { ascending: false })
           .limit(4);
-        setPacks((data || []) as unknown as PackWithItems[]);
+        const packsList = ((data || []) as unknown as PackWithItems[]);
+
+        if (packsList.length > 0) {
+          const { data: itemsData } = await supabase
+            .from("pack_items")
+            .select("*, product:products(*)")
+            .in("pack_id", packsList.map((p) => p.id));
+          const itemsByPack = new Map<string, (PackItem & { product?: Product })[]>();
+          (itemsData || []).forEach((item: PackItem & { product?: Product }) => {
+            const list = itemsByPack.get(item.pack_id) || [];
+            list.push(item);
+            itemsByPack.set(item.pack_id, list);
+          });
+          packsList.forEach((p) => {
+            p.pack_items = itemsByPack.get(p.id) || [];
+          });
+        }
+
+        setPacks(packsList);
       } catch {
         setPacks([]);
       }
@@ -90,6 +110,15 @@ export function PacksSection() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-primary font-semibold">{formatPrice(pack.prix)}</span>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        addItem(pack);
+                      }}
+                      className="p-1.5 bg-primary/10 text-primary rounded-md hover:bg-primary hover:text-on-primary transition-all duration-300"
+                    >
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               </div>

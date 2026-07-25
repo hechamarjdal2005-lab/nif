@@ -58,8 +58,8 @@ export function Navbar() {
           className={cn(
             "mx-auto max-w-5xl rounded-full transition-all duration-300",
             isScrolled
-              ? "bg-background/80 backdrop-blur-xl shadow-md border border-outline-variant/30 py-2"
-              : "bg-background/50 backdrop-blur-md shadow-sm border border-outline-variant/20 py-2.5"
+              ? "bg-background/95 backdrop-blur-xl shadow-md border border-outline-variant/30 py-2.5"
+              : "bg-background/90 backdrop-blur-md shadow-sm border border-outline-variant/20 py-3"
           )}
         >
           <div className="flex items-center justify-between px-5 sm:px-6">
@@ -69,15 +69,15 @@ export function Navbar() {
                 <Image
                   src={logoUrl}
                   alt={SITE_NAME}
-                  width={120}
-                  height={36}
-                  className="h-8 w-auto"
+                  width={160}
+                  height={48}
+                  className="h-10 sm:h-12 w-auto"
                   priority
                 />
               ) : (
                 <h1
                   className={cn(
-                    "font-heading text-base sm:text-lg tracking-wider transition-colors duration-300",
+                    "font-heading text-lg sm:text-xl tracking-wider transition-colors duration-300",
                     isScrolled ? "text-primary" : "text-on-background"
                   )}
                 >

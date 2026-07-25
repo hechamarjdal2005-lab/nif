@@ -59,7 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const title = Object.entries(PAGE_TITLES).find(([key]) => pathname.startsWith(key))?.[1] || "Admin";
 
   return (
-    <div className="min-h-screen bg-darker">
+    <div className="dark min-h-screen bg-darker">
       <Sidebar
         isCollapsed={isSidebarCollapsed}
         onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}

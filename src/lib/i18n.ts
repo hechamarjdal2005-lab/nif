@@ -1,7 +1,7 @@
 export type Locale = "fr" | "ar";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TranslationDictionary = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: string | TranslationDictionary | any;
 };
 
