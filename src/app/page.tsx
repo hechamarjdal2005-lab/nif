@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
@@ -57,6 +58,17 @@ export default function HomePage() {
             {newProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link
+              href="/collection"
+              className={cn(
+                "inline-flex items-center justify-center px-6 py-3 bg-primary text-on-primary text-xs uppercase tracking-[0.14em] font-medium hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/10",
+                isAr && "font-arabic tracking-normal"
+              )}
+            >
+              Passer à la boutique
+            </Link>
           </div>
         </section>
       )}
