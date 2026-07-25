@@ -36,9 +36,9 @@ export function Testimonials() {
           <Skeleton className="h-10 w-64 mx-auto mb-4 bg-surface-container-low" />
           <Skeleton className="h-5 w-96 mx-auto bg-surface-container-low" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="scrollbar-hide -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-64 rounded-xl bg-surface-container-low" />
+            <Skeleton key={i} className="h-64 w-[82%] shrink-0 snap-start rounded-xl bg-surface-container-low sm:w-[46%] md:w-auto md:shrink" />
           ))}
         </div>
       </section>
@@ -56,11 +56,11 @@ export function Testimonials() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+      <div className="scrollbar-hide -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 sm:gap-5 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
         {testimonials.map((t) => (
           <div
             key={t.id}
-            className="bg-background border border-outline-variant/40 rounded-lg sm:rounded-xl p-4 sm:p-6 hover:border-primary/20 transition-all duration-300"
+            className="w-[82%] shrink-0 snap-start bg-background border border-outline-variant/40 rounded-lg p-4 hover:border-primary/20 transition-all duration-300 sm:w-[46%] sm:rounded-xl sm:p-6 md:w-auto md:shrink"
           >
             <StarRating rating={t.rating} size="sm" className="mb-4" />
             <p className={`text-secondary text-sm leading-relaxed mb-4 italic ${ar ? "font-arabic" : ""}`}>

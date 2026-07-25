@@ -47,9 +47,9 @@ export function FeaturedCategories() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div className="scrollbar-hide -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 sm:gap-5 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4">
         {categories.map((cat) => (
-          <Link key={cat.title} href={cat.href}>
+          <Link key={cat.title} href={cat.href} className="w-[82%] shrink-0 snap-start sm:w-[46%] md:w-auto md:shrink">
             <div className="group relative h-52 rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 hover:border-primary/30 transition-all duration-500">
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${cat.gradient} group-hover:scale-110 transition-transform duration-500`}

@@ -61,13 +61,13 @@ export function WhyChooseUs() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+        <div className="scrollbar-hide -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 sm:gap-5 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4">
           {cards.map((feature, i) => {
             const Icon = ICONS[i] || Shield;
             return (
               <div
                 key={feature.title}
-                className="text-center bg-background border border-outline-variant/40 rounded-lg sm:rounded-xl p-3 sm:p-6 hover:border-primary/20 transition-all duration-300 hover-lift"
+                className="w-[78%] shrink-0 snap-start text-center bg-background border border-outline-variant/40 rounded-lg p-4 hover:border-primary/20 transition-all duration-300 hover-lift sm:w-[44%] sm:rounded-xl sm:p-6 md:w-auto md:shrink"
               >
                 <div className="w-9 h-9 sm:w-11 sm:h-11 mx-auto mb-2 sm:mb-3 rounded-full bg-primary/10 flex items-center justify-center">
                   <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
