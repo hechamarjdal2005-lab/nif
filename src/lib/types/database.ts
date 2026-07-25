@@ -12,6 +12,7 @@ export interface Category {
   slug: string;
   type: CategoryType;
   image: string | null;
+  image_url: string | null;
   created_at: string;
 }
 
