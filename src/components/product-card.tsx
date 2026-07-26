@@ -21,6 +21,7 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
   const { addItem } = useCart();
   const { locale } = useLanguage();
   const ar = locale === "ar";
+  const isPack = product.type === "pack";
   const href = product.type === "pack" ? `/pack/${product.slug}` : `/produit/${product.slug}`;
   const productName = getLocalizedField(product as unknown as Record<string, unknown>, "nom", locale);
 
@@ -34,7 +35,7 @@ export function ProductCard({ product, discountedPrice, className }: ProductCard
       <Link href={href} className="absolute inset-0 z-10" aria-label={productName} />
 
       {/* Image */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low">
+      <div className={cn("relative overflow-hidden bg-surface-container-low", isPack ? "aspect-[4/3]" : "aspect-[3/4]")}>
         {product.images && product.images[0] ? (
           <Image
             src={getImageUrl(product.images[0])}

@@ -72,10 +72,10 @@ export function PacksSection() {
         {packs.map((pack) => {
           const itemCount = pack.pack_items?.length || 0;
           return (
-            <Link key={pack.id} href={`/pack/${pack.slug}`} className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-15px)] max-w-[210px] sm:max-w-none">
+            <Link key={pack.id} href={`/pack/${pack.slug}`} className="w-full sm:w-[calc(50%-10px)] lg:w-[calc(25%-15px)] max-w-[360px] sm:max-w-none">
               <div className="group relative bg-background border border-outline-variant/40 rounded-lg sm:rounded-xl overflow-hidden hover-lift">
                 {/* Image */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low">
+                <div className="relative aspect-[4/3] overflow-hidden bg-surface-container-low">
                   {pack.images?.[0] ? (
                     <Image
                       src={getImageUrl(pack.images[0])}

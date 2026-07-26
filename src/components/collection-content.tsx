@@ -168,7 +168,11 @@ export function CollectionContent({
       {paginatedProducts.length > 0 ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {paginatedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              className={product.type === "pack" ? "col-span-2 sm:col-span-1" : undefined}
+            />
           ))}
         </div>
       ) : (

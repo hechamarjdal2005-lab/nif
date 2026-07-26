@@ -36,7 +36,7 @@ export function PackDetail({ pack }: PackDetailProps) {
     <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1fr] gap-6 lg:gap-8">
       {/* Image */}
       <div>
-        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 max-w-[340px] sm:max-w-[380px] lg:max-w-[360px]">
+        <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/40 max-w-[520px]">
           {images[selectedImage] ? (
             <Image
               src={getImageUrl(images[selectedImage])}
